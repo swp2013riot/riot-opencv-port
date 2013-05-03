@@ -1,0 +1,74 @@
+\documentclass[10pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[german]{babel}
+\usepackage[pdfborder={0 0 0}]{hyperref}
+\usepackage{tabularx}
+
+\setlength{\parindent}{0cm}
+
+\title{Freie Universität Berlin \\
+	Institut für Informatik \\
+	SoSe 2013 \\ \ \\
+	Softwareprojekt Telematik: \\ \ \\
+	\textbf {Portierung von OpenCV auf RIOT OS} \\ \ \\
+	Projektbeschreibung mit Zeitplan \\ \ \\}
+\author{Daniel Akrap  \textless\href{mailto:daniel.akrap@fu-berlin.de}{daniel.akrap@fu-berlin.de}\textgreater
+        \and Lidia Krus \textless\href{mailto:ruskrus@gmail.com}{ruskrus@gmail.com}\textgreater 		\\ \\
+	Betreuerin: Dipl.-Inform. Alexandra Danilkina \\ 
+	\textless\href{mailto:alexandra.danilkina@fu-berlin.de}{alexandra.danilkina@fu-berlin.de}\textgreater}
+\date{30. April 2013}
+
+\begin{document}
+
+\maketitle
+
+\newpage
+\section{Projektbeschreibung}
+
+Ziel des Softwareprojektes ist die Portierung von OpenCV auf das Betriebssystem RIOT im Rahmen des Projekts SAFEST.
+Das Projekt SAFEST (Social-Area Framework for Early Security Triggers at Airports) ist ein deutsch-französisches Gemeinschaftsprojekt zur Überwachung von Menschenansammlungen, die der Verbesserung der Sicherheit an Flughäfen dient. \\
+
+Die Daten zur Überwachung von Menschenansammlungen werden mit Videokameras erhoben und sollen mit der Graphikbibliothek OpenCV (Open Source Computer Vision Library) verarbeitet werden. Diese Bibliothek enthält Algorithmen für Bildverarbeitung und Maschinelles Sehen mit Fokus auf Echtzeitfähigkeit. OpenCV ist in C und (ab Version 2.0) in C++ implementiert. \\
+
+Im Rahmen des Softwareprojekts Telematik wird diese Bibliothek auf das Betriebssystem RIOT portiert. Das Mikrokernel-Betriebssystem RIOT ist für Geräte mit eingeschränkten Ressourcen (wie das im Projekt benutzte Entwicklerboard MSB-A2) gut geeignet, aber nicht darauf beschränkt. RIOT OS ist modular aufgebaut, unterstützt Multithreading und ist echtzeitfähig. Die Entwicklung erfolgt mit den Standardentwicklungswerkzeugen wie gcc, gdb in den Programmiersprachen C oder C++. \\
+
+Die Portierung von OpenCV auf RIOT ermöglicht Bildverarbeitung in Echtzeit auf der Plattform RIOT und erweitert damit die Möglichkeiten im Bereich des Internet of Things. \\
+
+\newpage
+\section{Zeitplan}
+
+\renewcommand{\arraystretch}{2}
+\begin{tabularx}{\textwidth}{lX}
+\textbf{23.04 - 30.04:} & 
+- Einrichten und Testen der Arbeitsumgebung \newline
+- Einarbeiten in die Projekte SAFEST, RIOT OS, MSB-A2 und OpenCV \\
+
+\textbf{30.04 - 07.05:} & 
+- Test auf Machbarkeit der Portierung von OpenCV \newline
+- Festlegung der Aufgabenverteilung im Team \\
+
+\textbf{07.05 - 14.05:} & 
+- Beginn der Portierung von OpenCV auf die RIOT OS Plattform \\
+
+\textbf{14.05 - 11.06:} & 
+- Zusammenfassung des bisherigen Projektstandes und Vorbereitung der Präsentation \\
+
+\textbf{11.06 - 09.07:} & 
+- Portierung der für das Projekt SAFEST relevanten Module \newline
+- Testen und Fehlerbehebung \newline
+- Abschlussbericht \\ 
+\\\\\\\\
+\end{tabularx}
+
+
+\section{Quellen}
+\begin{itemize}
+\item Projekt SAFEST (\textless\href{http://safest.realmv6.org/}{http://safest.realmv6.org/}\textgreater)
+\item OpenCV (\textless\href{http://opencv.org}{http://opencv.org}\textgreater)
+\item OS RIOT (\textless\href{http://www.riot-os.org}{http://www.riot-os.org}\textgreater)
+\end{itemize}
+
+
+
+\end{document}
