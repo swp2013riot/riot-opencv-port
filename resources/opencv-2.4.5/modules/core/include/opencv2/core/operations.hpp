@@ -40,6 +40,9 @@
 //
 //M*/
 
+#include <cmath> // add by daniel
+#include <iostream>
+
 #ifndef __OPENCV_CORE_OPERATIONS_HPP__
 #define __OPENCV_CORE_OPERATIONS_HPP__
 

@@ -1,0 +1,15 @@
+CC=gcc
+
+
+bg:bg.o 
+	$(CC) -o bg bg.o image.o -g3 -ljpeg
+	
+bg.o: main.c image.o
+	$(CC) -g3 -std=gnu99 -c main.c -o bg.o 
+
+image.o: image.c
+	$(CC) -g3 -std=gnu99 -c image.c -o image.o
+
+
+clean:
+	rm -rf *.o bg
