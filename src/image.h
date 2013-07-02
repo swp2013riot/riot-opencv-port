@@ -3,17 +3,17 @@
 #include <jpeglib.h>
 
 
-void bgsubstraction(int** input_matrix, int** output_bg_matrix, int** output_fg_matrix);
+//void bgsubstraction(int** input_matrix, int** output_bg_matrix, int** output_fg_matrix);
 
-unsigned char* convertMatrix2Raw(int** my2dArray);
+unsigned char* convertMatrix2Raw(unsigned char** my2dArray);
 
-int** convertRaw2Matrix(unsigned char* raw_image);
+unsigned char** convertRaw2Matrix(unsigned char* raw_image);
 
-int printImageMatrix(int** Matrix);
+int printImageMatrix(unsigned char** Matrix);
 
-int** create2dintArray(int arraySizeX, int arraySizeY);
+unsigned char** create2dintArray(int arraySizeX, int arraySizeY);
 
-int free2dintArray (int** my2dArray);
+int free2dintArray (unsigned char** my2dArray);
 
 unsigned char* read_jpeg_file( char *filename);
 

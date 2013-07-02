@@ -72,7 +72,7 @@ static const int defaultHistory = 200;
 static const double defaultBackgroundRatio = 0.7;
 static const double defaultVarThreshold = 2.5*2.5;
 static const double defaultNoiseSigma = 30*0.5;
-static const double defaultInitialWeight = 0.05;
+
 
 BackgroundSubtractorMOG::BackgroundSubtractorMOG()
 {

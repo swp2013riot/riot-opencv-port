@@ -3,7 +3,7 @@
 
 int width = 0;
 int height = 0;
-int components_per_pixel;// = 3  or 1 for GRACYSCALE images */
+int components_per_pixel; // = 3  or 1 for GRACYSCALE images */
 int color_space;        // = JCS_RGB or JCS_GRAYSCALE*/
 
 
@@ -97,7 +97,7 @@ int write_jpeg_file( char *filename, unsigned char* raw_image )
 	cinfo.image_width = width;	
 	cinfo.image_height = height;
 	cinfo.input_components = components_per_pixel;
-	cinfo.in_color_space = color_space;
+//	cinfo.in_color_space = color_space;
 
 
 
@@ -124,18 +124,18 @@ int write_jpeg_file( char *filename, unsigned char* raw_image )
 
 
 /*create dynamic 2d Array*/
-int** create2dintArray(int arraySizeX, int arraySizeY)
+unsigned char** create2dintArray(int arraySizeX, int arraySizeY)
 {  
-   int** my2dArray;  
-   my2dArray = (int**) malloc(arraySizeX*sizeof(int*));  
+   unsigned char** my2dArray;  
+   my2dArray = (unsigned char**) malloc(arraySizeX*sizeof(unsigned char*));  
    for (int i = 0; i < arraySizeX; i++)  
-      my2dArray[i] = (int*) malloc(arraySizeY*sizeof(int));  
+      my2dArray[i] = (unsigned char*) malloc(arraySizeY*sizeof(unsigned char));  
 
    return my2dArray;  
 }   
 
 /*free 2d Array*/
-int free2dintArray (int** my2dArray)
+int free2dintArray (unsigned char** my2dArray)
 {
    for (int i = 0; i < width; i++)
    {  
@@ -147,10 +147,10 @@ int free2dintArray (int** my2dArray)
 }
 
 /*convert raw_image to nxn Matrix*/
-int** convertRaw2Matrix(unsigned char *raw_image)
+unsigned char** convertRaw2Matrix(unsigned char *raw_image)
 {
 
-   int** imageMatrix = create2dintArray(width,height);
+   unsigned char** imageMatrix = create2dintArray(width,height);
    int i = 0;
    int j = 0;
    int tmp = 0;
@@ -166,7 +166,7 @@ int** convertRaw2Matrix(unsigned char *raw_image)
 }
 
 /*convert nxn Matrix to raw_image */
-unsigned char* convertMatrix2Raw(int** imageMatrix)
+unsigned char* convertMatrix2Raw(unsigned char** imageMatrix)
 {
    unsigned char * raw_image_return = (unsigned char*)malloc( width*height*2 );
    int i = 0;
@@ -185,7 +185,7 @@ unsigned char* convertMatrix2Raw(int** imageMatrix)
 
 
 /*print nxn Matrix*/
-int printImageMatrix(int** Matrix)
+int printImageMatrix(unsigned char** Matrix)
 {
    int i = 0;
    int j = 0;
