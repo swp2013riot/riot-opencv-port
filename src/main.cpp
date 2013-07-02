@@ -42,7 +42,7 @@ static const double defaultNoiseSigma = 30*0.5;
 process8uC1( imageMat,
                          imageMatReturn,
                          learningRate,
-                         imageMat,
+                         bgmodel,
                          defaultNMixtures,
                          defaultBackgroundRatio,
                          defaultVarThreshold,
