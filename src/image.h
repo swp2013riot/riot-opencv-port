@@ -18,3 +18,7 @@ int free2dintArray (unsigned char** my2dArray);
 unsigned char* read_jpeg_file( char *filename);
 
 int write_jpeg_file( char *filename, unsigned char* raw_image );
+
+int get_height();
+
+int get_width();

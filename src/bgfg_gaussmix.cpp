@@ -19,35 +19,40 @@ typedef unsigned char uchar;
 static const double defaultNoiseSigma = 30*0.5;
 static const double defaultInitialWeight = 0.05;
 
-template<typename VT> struct MixData
-{
-    float sortKey;
-    float weight;
-    VT mean;
-    VT var;
-};
+//template<typename VT> struct MixData
+//{
+//    float sortKey;
+//    float weight;
+//    VT mean;
+//    VT var;
+//};
+
+
 
 
 void process8uC1( unsigned char** image,
                          unsigned char** fgmask,
                          double learningRate,
-                         unsigned char** bgmodel,
+                         MixData* bgmodel,
                          int nmixtures,
                          double backgroundRatio,
                          double varThreshold,
-                         double noiseSigma )
+                         double noiseSigma,
+                         int image_rows,
+                         int image_cols )
 {
     //int x, y, k, k1, rows = image.rows, cols = image.cols;
-    int x, y, k, k1, rows = 10, cols = 10;
+    int x, y, k, k1;
     float alpha = (float)learningRate, T = (float)backgroundRatio, vT = (float)varThreshold;
     int K = nmixtures;
-    MixData<float>* mptr = (MixData<float>*)bgmodel;
-
+    //MixData<float>* mptr = (MixData<float>*)bgmodel;
+     MixData *mptr = bgmodel;
     const float w0 = (float)defaultInitialWeight;
     const float sk0 = (float)(w0/(defaultNoiseSigma*2));
     const float var0 = (float)(defaultNoiseSigma*defaultNoiseSigma*4);
     const float minVar = (float)(noiseSigma*noiseSigma);
-
+     int rows = image_rows;
+     int cols = image_cols;
     for( y = 0; y < rows; y++ )
     {
         //const uchar* src = image.ptr<uchar>(y);
@@ -57,23 +62,23 @@ void process8uC1( unsigned char** image,
         {
             for( x = 0; x < cols; x++, mptr += K )
             {
-                float wsum = 0;printf("1: x: %d\t%d\n", x,y);
+                float wsum = 0;//printf("1: x: %d\t%d\n", x,y);
                 //float pix = src[x];
-                float pix = image[y][x];printf("2: x: %d\t%d\n", x,y);
+                float pix = image[y][x];//printf("2: x: %d\t%d\n", x,y);
                 int kHit = -1, kForeground = -1;
 
                 for( k = 0; k < K; k++ )
-                {printf("3: x: %d\t%d\n", x,y);
+                {//printf("3: x: %d\t%d\n", x,y);
                     float w = mptr[k].weight;
-                    wsum += w;
+                    wsum += w;//printf("k: %f\n", mptr[k].weight);
                     if( w < FLT_EPSILON )
                         break;
                     float mu = mptr[k].mean;
                     float var = mptr[k].var;
                     float diff = pix - mu;
-                    float d2 = diff*diff;printf("4: x: %d\t%d\n", x,y);
+                    float d2 = diff*diff;//printf("4: x: %d\t%d\n", x,y);
                     if( d2 < vT*var )
-                    {printf("5: x: %d\t%d\n", x,y);
+                    {//printf("5: x: %d\t%d\n", x,y);
                         wsum -= w;
                         float dw = alpha*(1.f - w);
                         mptr[k].weight = w + dw;
@@ -110,11 +115,11 @@ void process8uC1( unsigned char** image,
                 float wscale = 1.f/wsum;
                 wsum = 0;
                 for( k = 0; k < K; k++ )
-                {printf("8: x: %d\n",k);
+                {//printf("8: x: %d\n",k);
                     wsum += mptr[k].weight *= wscale;
-                    mptr[k].sortKey *= wscale;printf("9: x: %d\n",k);
+                    mptr[k].sortKey *= wscale;//printf("9: x: %d\n",k);
                     if( wsum > T && kForeground < 0 )
-                        kForeground = k+1;printf("10: x: %d\n",k);
+                        kForeground = k+1;//printf("10: x: %d\n",k);
                 }
 
                 //dst[x] = (uchar)(-(kHit >= kForeground));
@@ -157,9 +162,8 @@ void process8uC1( unsigned char** image,
                         }
                     }
                 }
-
                 //dst[x] = (uchar)(kHit < 0 || kHit >= kForeground ? 255 : 0);
-                fgmask[y][x] = (uchar)(kHit < 0 || kHit >= kForeground ? 255 : 0);
+                fgmask[y][x] = (uchar)(kHit < 0 || kHit >= kForeground ? 255 : 0);      
             }
         }
     }

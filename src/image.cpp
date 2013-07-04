@@ -200,7 +200,15 @@ int printImageMatrix(unsigned char** Matrix)
    return 0;
 }
 
+int get_height()
+{
+   return height;
+}
 
+int get_width()
+{
+   return width;
+}
 
 /*backgroundsubstraction*/
 //TODO

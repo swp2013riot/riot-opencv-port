@@ -1,20 +1,20 @@
 CC=g++
-
+CFLAGS=-std=c++11
 
 bg:bg.o 
 	$(CC) -o bg bg.o image.o bgfg_gaussmix.o -g3 -ljpeg
 	
 bg.o: main.cpp image.o bgfg_gaussmix.o
-	$(CC) -g3 -c main.cpp -o bg.o 
+	$(CC) $(CFLAGS) -g3 -c main.cpp -o bg.o 
 
 image.o: image.cpp
-	$(CC) -g3 -c image.cpp -o image.o
+	$(CC) $(CFLAGS) -g3 -c image.cpp -o image.o
 
 #CvPixelBackgroundGMM.o: CvPixelBackgroundGMM.cpp CvPixelBackgroundGMM.h
-#	$(CC) -g3 -c CvPixelBackgroundGMM.cpp -o CvPixelBackgroundGMM.o
+#	$(CC) $(CFLAGS) -g3 -c CvPixelBackgroundGMM.cpp -o CvPixelBackgroundGMM.o
 
 bgfg_gaussmix.o: bgfg_gaussmix.cpp
-	$(CC) -g3 -c bgfg_gaussmix.cpp -o bgfg_gaussmix.o
+	$(CC) $(CFLAGS) -g3 -c bgfg_gaussmix.cpp -o bgfg_gaussmix.o
 
 clean:
 	rm -rf *.o bg
