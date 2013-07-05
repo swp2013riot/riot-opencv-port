@@ -1,0 +1,195 @@
+\documentclass[10pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[german]{babel}
+\usepackage[pdfborder={0 0 0}]{hyperref}
+\usepackage{tabularx}
+
+\setlength{\parindent}{0cm}
+
+\title{Freie Universität Berlin \\
+	Institut für Informatik \\
+	SoSe 2013 \\ \ \\
+	Softwareprojekt Telematik: \\ \ \\
+	\textbf {Portierung von OpenCV auf RIOT OS} \\ \ \\
+	Projektbericht \\ \ \\}
+\author{Daniel Akrap  \textless\href{mailto:daniel.akrap@fu-berlin.de}{daniel.akrap@fu-berlin.de}\textgreater
+        \and Lidia Krus \textless\href{mailto:ruskrus@gmail.com}{ruskrus@gmail.com}\textgreater 		\\ \\
+	Betreuerin: Dipl.-Inform. Alexandra Danilkina \\ 
+	\textless\href{mailto:alexandra.danilkina@fu-berlin.de}{alexandra.danilkina@fu-berlin.de}\textgreater}
+\date{09. Juli 2013}
+
+\begin{document}
+
+\maketitle
+
+\newpage
+\section*{Abstract}
+
+Das Ziel des Softwareprojektes ist die Portierung von OpenCV auf das Betriebssystem RIOT mit Bezug auf Projekt SAFEST, dessen Ziel die Verbesserung der Sicherheit an Flughäfen mittels Überwachung von Menschenansammlungen ist. Die Portierung von OpenCV auf RIOT ermöglicht Bildverarbeitung in Echtzeit auf der Plattform RIOT und erweitert damit die Möglichkeiten im Bereich des Internet of Things. \\
+
+\newpage
+\section*{Inhaltsverzeichnis}
+
+\begin{itemize}
+\item Einleitung
+\item Our work
+\item Musteranwendung für RIOT OS
+\item Zusammenfassung und Ausblick
+\item Anhang
+\item Quellen
+\end{itemize}
+
+\newpage
+\section{Einleitung}
+
+Dieses Dokument ist der Schlussbericht des Softwareprojekts \glqq Portierung von OpenCV auf RIOT OS\grqq. Das Projekt wurde vom 23.04.2013 bis 09.07.2013 von Daniel Akrap und Lidia Krus unter Betreuung von Dipl.-Inform. Alexandra Danilkina im Rahmen der Lehrveranstaltung Softwareprojekt Telematik am Institut für Informatik an der FU Berlin durchgeführt. \\
+
+Der Projektbericht beschreibt die Aufgabenstellung, die Planung, das Umfeld sowie den Ablauf vom Projekt. Des Weiteren werden die erzielten Ergebnisse ausführlich beschrieben sowie Einsatzempfehlungen für die entwickelte Lösung gegeben. Schließlich werden der Nutzen und die Verwertbarkeit der Ergebnisse ausgeführt.
+
+//// Wichtig für Softwareprojekte als Lehrveranstaltung
+- Anforderungsermittlung 
+- Architektur und Modularisierung verstehen, Schnittstellenspezifikation
+- Wartung, Reengineering bestehender Softwareteile
+- Durchsichten von Anforderungen, Implementierungen und Testfällen
+- Modul-, Integrations- und Systemtests; Testautomatisierung
+- Versions- und Konfigurationsverwaltung, Build-Prozesse, Continuous Integration
+- Dokumentation von Prozessen und Produkten
+
+
+\subsection{Aufgabenstellung}
+
+Das Ziel des Softwareprojektes ist die Portierung von OpenCV auf das Betriebssystem RIOT im Rahmen des Projekts SAFEST.
+Das Projekt SAFEST (Social-Area Framework for Early Security Triggers at Airports) ist ein deutsch-französisches Gemeinschaftsprojekt zur Überwachung von Menschenansammlungen, die der Verbesserung der Sicherheit an Flughäfen dient. \\
+
+Die Daten zur Überwachung von von Menschenansammlungen werden mit Videokameras aufgenommen und sollen mit der Graphikbibliothek OpenCV (Open Source Computer Vision Library) verarbeitet werden. Diese Bibliothek enthält Algorithmen für Bildverarbeitung und Maschinelles Sehen mit Fokus auf Echtzeitfähigkeit. OpenCV ist in C und (ab Version 2.0) in C++ implementiert. \\
+
+Im Rahmen des Softwareprojekts Telematik wird diese Bibliothek auf das Betriebssystem RIOT portiert. Das Mikrokernel-Betriebssystem RIOT ist für Geräte mit eingeschränkten Ressourcen besonders gut geeignet. RIOT OS ist modular aufgebaut, unterstützt Multithreading und ist echtzeitfähig. Die Entwicklung erfolgt mit den Standardentwicklungswerkzeugen wie gcc, gdb in den Programmiersprachen C oder C++. \\
+
+Die Portierung von OpenCV auf RIOT ermöglicht Bildverarbeitung in Echtzeit auf der Plattform RIOT und erweitert damit die Möglichkeiten im Bereich des Internet of Things. \\
+
+Da im Projekt SAFEST der erste Bildverarbeitungsschritt auf die Vorverarbeitung auf der Node mittels Separierung von Personen und Menschenansammlungen von dem Hintergrund zwecks Verringerung des Datenumfangs ausgerichtet ist, haben wir uns für den folgenden Anwendungsfall als Vorgabe für unsere Anwendung entschieden: 
+
+\begin{itemize}
+\item Das Programm bekommt ein Bild (oder Videostream?) als Eingabe
+\item Das Programm berechnet Hintergrund, entfernt ihn und gibt das verarbeitete Bild zurück
+\end{itemize}
+
+\subsection{Projektplanung}
+
+Milestones: ein c++ Programm lauffähig auf RIOT; Algorithmus zur Entfernung des Hintergrunds;
+
+
+Das Projekt Portierung von OpenCV auf RIOT OS gliedert sich in vier Teilprobleme. Diese sind:
+\begin{itemize}
+\item Einrichtung der Arbeitsumgebung und Einarbeitung in die Projekte RIOT OS, OpenCV, SAFEST
+\item Feststellung des Umfangs, in dem Programme in C++ von RIOT OS unterstützt sind.
+\item (Evtl.) Erstellung einer erweiternden Dokumentation für die Benutzung von C++ unter RIOT
+\item Entwicklung einer auf RIOT OS lauffähigen Musteranwendung für Bildverarbeitung
+\end{itemize}
+
+Die Arbeit an dem Projekt umfasste die Tätigkeiten zum Management, der Dokumentation und der Außendarstellung des Projekts mittels 3 Präsentationen am Anfang, in der Mitte und am Ende des Projekts. Um den erfolgreichen Ablauf zu sichern, wurden in der Anfangsphase Meilensteine definiert und ein Arbeitsplan erarbeitet, der sich jedoch während der Projektentwicklung erheblich geändert hat. Für das Projekt haben wir RIOT OS (Stand April-Mai 2013) und OpenCV (Version 2.4.5) verwendet. Für die Zusammenarbeit am Projekt haben wir Github benutzt. Außerdem fanden wöchentliche Treffen der Teammitglieder statt. \\
+
+/////ALTER PLAN
+
+\renewcommand{\arraystretch}{2}
+\begin{tabularx}{\textwidth}{lX}
+\textbf{23.04 - 30.04:} & 
+- Einrichten und Testen der Arbeitsumgebung \newline
+- Vertrautmachen mit dem Projekt SAFEST, RIOT OS, MSB-A2 und OpenCV \\
+
+\textbf{30.04 - 07.05:} & 
+- Test auf Machbarkeit der Portierung von OpenCV \newline
+- Festlegung der Aufgabenverteilung im Team \\
+
+\textbf{07.05 - 14.05:} & 
+- Beginn der Portierung von OpenCV auf die RIOT OS Plattform \\
+
+\textbf{14.05 - 11.06:} & 
+- Zusammenfassung des bisherigen Projektstandes und Vorbereitung der Präsentation \\
+
+\textbf{11.06 - 09.07:} & 
+- Portierung der für das Projekt SAFEST relevanten Module \newline
+- Testen und Fehlerbehebung \newline
+- Abschlussbericht \\ 
+\\\\\\\\
+\end{tabularx}
+
+
+\subsection{Stand der Technik}
+
+OpenCV Version 2.4.5 verwendet C++.
+C++ Unterstützung unter RIOT wäre nötig.
+-> IST-Zustand zu Projektbeginn: C++ Unterstützung mangelhaft
+-> Entwicklungen zeitgleich zum Projekt: RIOT wurde verbessert, c++ Unterstützung ebenfalls. Die blieb aber unkomplett.
+
+Während der Laufzeit des Projekts wurden folgende Entwicklungen am RIOT OS beobachtet: 
+- Verbesserung der Unterstützung von Native Port
+- Viele Bugfixes
+- usw.
+
+Hardwareauswahl: Wir haben uns statt MSB-A2 für Native Port entschieden...
+Begründung: ....
+
+\newpage
+\section{Projektentwicklung}
+Während der Einarbeitungszeit hatten wir viele Schwierigkeiten aufgrund mangelhafter Dokumentation und öfteren Veränderungen am RIOT. Viel Zeit hat das Herausfinden des Grundes für das Nichtlaufen einfacher c++-Testprogramme unter RIOT gekostet. Letztendlich hat sich herausgestellt, dass die Unterstützung vieler grundlegender c++-Bibliotheken fehlt (wie fstream, iostream usw.), die z.B. mit Systemzugriff arbeiten, was für Portierbarkeit von OpenCV entscheidend wäre. Dadurch haben sich technische Anforderungen geändert und es wurde entschieden, mindestens zu versuchen, einen Beispielalgorithmus von OpenCV (Background Subtractor) in einer Musteranwendung einzusetzen. Als Nebenleistung sollte eine Hilfsdokumentation zur Benutzung von C++-Programmen unter RIOT erstellt werden. 
+
+\newpage
+\section{Musteranwendung für RIOT OS}
+
+Da im Projekt SAFEST der erste Bildverarbeitungsschritt auf die Vorverarbeitung auf der Node mittels Separierung von Personen und Menschenansammlungen von dem Hintergrund zwecks Verringerung des Datenumfangs ausgerichtet ist, haben wir uns für den folgenden Anwendungsfall als Vorgabe für unsere Anwendung entschieden: 
+
+\begin{itemize}
+\item Das Programm bekommt ein Bild (oder Videostream?) als Eingabe
+\item Das Programm berechnet Hintergrund, entfernt ihn und gibt das verarbeitete Bild zurück
+\end{itemize}
+
+Für den Anwendungsfall \glqq Hintergrundentfernung\grqq standen zwei mögliche Varianten für die Entwicklung zur Auswahl: eine Implementierung mittels Importierung der nötigen OpenCV-Module oder Verwendung des OpenCV-Algorithmus zur Hintergrundentfernung für den Fall, dass OpenCV nicht auf RIOT OS portierbar ist. \\
+
+Aufgrund der mangelhaften Unterstützung vieler C++-Bibliotheken unter RIOT, was die Portierung erheblich erschwerte, haben wir uns für die zweite Alternative entschieden. Dafür war das Kennenlernen des OpenCV-Algorithmus zur Entfernung des Hintergrunds erforderlich. \\
+
+
+.... Vielleicht paar Tabellen oder Klassendiagrammen...  bla bla
+
+(dies und das haben wir gemacht)
+
+
+\newpage
+\section{Zusammenfassung und Ausblick}
+
+Insgesamt verlief die Arbeit am Projekt so und so.
+
+Es hat sich dies und das gezeigt.
+
+Als Positiv hat sich dies und das erwiesen.
+
+- Schlussfolgerungen
+- Offene Punkte
+- Weiteres Vorgehen
+
+\newpage
+\section{Anhang}
+
+- Glossar
+
+
+\newpage
+\section{Quellen}
+
+\subsection*{Homepages der betreffenden Projekte und Ressourcen}
+\begin{itemize}
+\item Projekt SAFEST (\textless\href{http://safest.realmv6.org/}{http://safest.realmv6.org/}\textgreater)
+\item OpenCV (\textless\href{http://opencv.org}{http://opencv.org}\textgreater)
+\item OS RIOT (\textless\href{http://www.riot-os.org}{http://www.riot-os.org}\textgreater)
+\end{itemize}
+
+\subsection*{Veröffentlichungen zu den betreffenden Projekten} 
+- die 3 RIOT-Publikationen
+- OpenCV Portierung Beispiele
+- Literatur zu Bildverarbeitung mit Schwerpunkt auf Hintergrundentfernung
+
+
+
+
+\end{document}
