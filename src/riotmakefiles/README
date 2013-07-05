@@ -1,0 +1,2 @@
+MAKEFILE:          muss in den riot projektordner. z.b: /default-native
+Makefile.include:  muss in den Ordner /RIOT
