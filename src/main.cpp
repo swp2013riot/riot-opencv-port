@@ -2,216 +2,96 @@
 #include <stdlib.h>
 #include "image.h"
 #include "bgfg_gaussmix.h"
+#include <list>
+
+using namespace std;
 
 int main()
 {
+   /*init Values MOG Background Subtractor*/
+   static const int defaultNMixtures = 5;
+   static const double learningRate = 0.1;
+   static const double defaultBackgroundRatio = 0.7;
+   static const double defaultVarThreshold = 2.5*2.5;
+   static const double defaultNoiseSigma = 30*0.5;
 
-static const int defaultNMixtures = 5;
-static const double learningRate = 0.1;
-static const double defaultBackgroundRatio = 0.7;
-static const double defaultVarThreshold = 2.5*2.5;
-static const double defaultNoiseSigma = 30*0.5;
-
-struct MixData bgmodel[500];
+   //background model
+   //size is frame.height*frame.width*nmixtures*(2 + 2*nchannels)
+   // 10*10*5(2+2*1)=2000
+   //@todo dynamic init
+   struct MixData bgmodel[2000];
 
 
+   /**/
+   list<unsigned char**> frame_list;
 
    unsigned char *raw_image = NULL;
    unsigned char *raw_image_return = NULL;
-   unsigned char** imageMat0 = NULL;
-   unsigned char** imageMat1 = NULL;
-   unsigned char** imageMat2 = NULL;
-   unsigned char** imageMat3 = NULL;
-   unsigned char** imageMat4 = NULL;
-   unsigned char** imageMat5 = NULL;
-   unsigned char** imageMatReturn = NULL;
+
+   unsigned char** image_fg = NULL;
 	char infilename[] = "test_input0.jpg";
 	char outfilename[] = "fg_image.jpg";
 
    // open bw jpeg
-   raw_image = read_jpeg_file( infilename );
+   raw_image = image_read_jpeg_file( infilename );
 
-   //create Images, size is 10x10
-   imageMat0=create2dintArray(10,10);
-   imageMat1=create2dintArray(10,10);
-   imageMat2=create2dintArray(10,10);
-   imageMat3=create2dintArray(10,10);
-   imageMat4=create2dintArray(10,10);
-   imageMat5=create2dintArray(10,10);
-   
-   //st image color. bg=gray, fg=white
-   int i = 0;
-   int j = 0;  
-   for( j = 0; j < 10; j++)
+
+   /*this examplae creates some test images*/
+
+   /*create a frame list*/
+   for(int i= 0; i<6; i++)
    {
-      for( i = 0; i < 10; i++ )
-      {
-         imageMat0[j][i] = 255;
-      }
+      frame_list.push_front(image_matrix_create(10,10));
 
    }
-      for( i = 0; i < 10; i++ )
-      {
-         imageMat0[1][i] = 10;
-      }
 
-   for( j = 0; j < 10; j++)
+   /*paint some stripes into the images*/
+   int line=0;
+   for (list<unsigned char**>::const_iterator it = frame_list.begin(); it != frame_list.end(); ++it)
    {
-      for( i = 0; i < 10; i++ )
-      {
-         imageMat1[j][i] = 255;
-      }
 
+      image_create_white_stripe(*it,10, 10, line );
+      //image_matrix_print(*it);printf("\n");
+      line++;
    }
-      for( i = 0; i < 10; i++ )
-      {
-         imageMat1[2][i] = 10;
-      }
-      
-   for( j = 0; j < 10; j++)
+
+
+   /*create emtpy fg image*/
+   image_fg=image_matrix_create(image_get_height(),image_get_width());
+
+
+   /*extract the fg_image*/
+   for (list<unsigned char**>::const_iterator frame = frame_list.begin(); frame != frame_list.end(); ++frame)
    {
-      for( i = 0; i < 10; i++ )
-      {
-         imageMat2[j][i] = 255;
-      }
 
-   }
-      for( i = 0; i < 10; i++ )
-      {
-         imageMat2[3][i] = 10;
-      }
-   for( j = 0; j < 10; j++)
-   {
-      for( i = 0; i < 10; i++ )
-      {
-         imageMat3[j][i] = 255;
-      }
-
-   }
-      for( i = 0; i < 10; i++ )
-      {
-         imageMat3[4][i] = 10;
-      }
-   for( j = 0; j < 10; j++)
-   {
-      for( i = 0; i < 10; i++ )
-      {
-         imageMat4[j][i] = 255;
-      }
-
-   }
-      for( i = 0; i < 10; i++ )
-      {
-         imageMat4[5][i] = 10;
-      }
-   for( j = 0; j < 10; j++)
-   {
-      for( i = 0; i < 10; i++ )
-      {
-         imageMat5[j][i] = 255;
-      }
-
-   }
-      for( i = 0; i < 10; i++ )
-      {
-         imageMat5[6][i] = 10;
-      }      
-
-
-
-   // print the matrix
-//   printImageMatrix(imageMat0);
-//   printImageMatrix(imageMat1);
-//   printImageMatrix(imageMat2);
-//   printImageMatrix(imageMat3);
-//   printImageMatrix(imageMat4);
-//   printImageMatrix(imageMat5);
-   imageMatReturn=create2dintArray(get_height(),get_width());
-
-
-
-
-   process8uC1( imageMat0,
-                imageMatReturn,
+   process8uC1( *frame,
+                image_fg,
                 learningRate,
                 bgmodel,
                 defaultNMixtures,
                 defaultBackgroundRatio,
                 defaultVarThreshold,
-                defaultNoiseSigma,get_height(),get_width() );    
-
-   process8uC1( imageMat1,
-                imageMatReturn,
-                learningRate,
-                bgmodel,
-                defaultNMixtures,
-                defaultBackgroundRatio,
-                defaultVarThreshold,
-                defaultNoiseSigma,get_height(),get_width() );  
-                                     
-   process8uC1( imageMat2,
-                imageMatReturn,
-                learningRate,
-                bgmodel,
-                defaultNMixtures,
-                defaultBackgroundRatio,
-                defaultVarThreshold,
-                defaultNoiseSigma,get_height(),get_width() );   
-
-   process8uC1( imageMat3,
-                imageMatReturn,
-                learningRate,
-                bgmodel,
-                defaultNMixtures,
-                defaultBackgroundRatio,
-                defaultVarThreshold,
-                defaultNoiseSigma,get_height(),get_width() );    
-
-   process8uC1( imageMat4,
-                imageMatReturn,
-                learningRate,
-                bgmodel,
-                defaultNMixtures,
-                defaultBackgroundRatio,
-                defaultVarThreshold,
-                defaultNoiseSigma,get_height(),get_width() );    
-        
-   process8uC1( imageMat5,
-                imageMatReturn,
-                learningRate,
-                bgmodel,
-                defaultNMixtures,
-                defaultBackgroundRatio,
-                defaultVarThreshold,
-                defaultNoiseSigma,get_height(),get_width() ); 
-
-
-
+                defaultNoiseSigma,image_get_height(),image_get_width() );    
+   }
 
                                                                                                                                       
-   //print the fg matrix
-   printImageMatrix(imageMatReturn);
-   //bgsubstraction(int** input_matrix, int** output_bg_matrix, int** output_fg_matrix);
-
+   //print the fg image
+   image_matrix_print(image_fg);
+   
    // convert matrix to raw
-   raw_image_return=convertMatrix2Raw(imageMatReturn);
+   raw_image_return=image_matrix_to_raw(image_fg);
 
    //write out jpeg
-   write_jpeg_file( outfilename, raw_image_return );
+   image_write_jpeg_file( outfilename, raw_image_return );
 
+   /*free mem*/
+   for (list<unsigned char**>::const_iterator frame = frame_list.begin(); frame != frame_list.end(); ++frame)
+   {
+      image_matrix_free( *frame);
+   }
 
-
-   
-   //free mem
-   free2dintArray(imageMat0);
-   free2dintArray(imageMat1);
-   free2dintArray(imageMat2);
-   free2dintArray(imageMat3);
-   free2dintArray(imageMat4);
-   free2dintArray(imageMat5);
-
+   frame_list.clear();
    free( raw_image );
-   //free( bgmodel );
    free( raw_image_return );
    printf("\ndone\n");
 	return 0;

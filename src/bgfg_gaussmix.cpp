@@ -4,30 +4,18 @@
 #include <math.h>
 #include <stdio.h>
 
+// to make sure we can use these short names
+#undef K
+#undef L
+#undef T
+
+
 typedef unsigned char uchar;
 
-/*static void process8uC1( const Mat& image,*/
-/*                        Mat& fgmask,*/
-/*                        double learningRate,*/
-/*                        Mat& bgmodel,*/
-/*                        int nmixtures,*/
-/*                        double backgroundRatio,*/
-/*                        double varThreshold,*/
-/*                        double noiseSigma )*/
 
 
 static const double defaultNoiseSigma = 30*0.5;
 static const double defaultInitialWeight = 0.05;
-
-//template<typename VT> struct MixData
-//{
-//    float sortKey;
-//    float weight;
-//    VT mean;
-//    VT var;
-//};
-
-
 
 
 void process8uC1( unsigned char** image,

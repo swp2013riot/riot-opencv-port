@@ -1,6 +1,3 @@
-// static void process8uC1( const Mat& image, Mat& fgmask, double learningRate,                        Mat& bgmodel, int nmixtures, double backgroundRatio, double varThreshold, double noiseSigma );
-
-
 struct MixData {
    float sortKey;
    float weight;

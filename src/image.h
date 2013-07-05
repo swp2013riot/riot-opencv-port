@@ -3,22 +3,22 @@
 #include <jpeglib.h>
 
 
-//void bgsubstraction(int** input_matrix, int** output_bg_matrix, int** output_fg_matrix);
+void image_create_white_stripe(unsigned char** emtpy_matrix, int dim_x, int dim_y, int stripe_line);
 
-unsigned char* convertMatrix2Raw(unsigned char** my2dArray);
+unsigned char* image_matrix_to_raw(unsigned char** my2dArray);
 
-unsigned char** convertRaw2Matrix(unsigned char* raw_image);
+unsigned char** image_rawimage_to_imageatrix(unsigned char* raw_image);
 
-int printImageMatrix(unsigned char** Matrix);
+int image_matrix_print(unsigned char** Matrix);
 
-unsigned char** create2dintArray(int arraySizeX, int arraySizeY);
+unsigned char** image_matrix_create(int dim_x, int dim_y);
 
-int free2dintArray (unsigned char** my2dArray);
+int image_matrix_free (unsigned char** my2dArray);
 
-unsigned char* read_jpeg_file( char *filename);
+unsigned char* image_read_jpeg_file( char *filename);
 
-int write_jpeg_file( char *filename, unsigned char* raw_image );
+int image_write_jpeg_file( char *filename, unsigned char* raw_image );
 
-int get_height();
+int image_get_height();
 
-int get_width();
+int image_get_width();

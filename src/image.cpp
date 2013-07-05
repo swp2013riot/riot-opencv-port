@@ -9,9 +9,9 @@ int color_space;        // = JCS_RGB or JCS_GRAYSCALE*/
 
 
 /*read jpeg*/
-unsigned char* read_jpeg_file( char *filename )
+unsigned char* image_read_jpeg_file( char *filename )
 {
-   int** imageMat = NULL;
+   //int** imageMat = NULL;
    unsigned char *raw_image = NULL;
 	/* these are standard libjpeg structures for reading(decompression) */
 	struct jpeg_decompress_struct cinfo;
@@ -75,7 +75,7 @@ unsigned char* read_jpeg_file( char *filename )
 }
 
 /*write jpeg*/
-int write_jpeg_file( char *filename, unsigned char* raw_image )
+int image_write_jpeg_file( char *filename, unsigned char* raw_image )
 {
 	struct jpeg_compress_struct cinfo;
 	struct jpeg_error_mgr jerr;
@@ -124,33 +124,33 @@ int write_jpeg_file( char *filename, unsigned char* raw_image )
 
 
 /*create dynamic 2d Array*/
-unsigned char** create2dintArray(int arraySizeX, int arraySizeY)
+unsigned char** image_matrix_create(int dim_x, int dim_y)
 {  
-   unsigned char** my2dArray;  
-   my2dArray = (unsigned char**) malloc(arraySizeX*sizeof(unsigned char*));  
-   for (int i = 0; i < arraySizeX; i++)  
-      my2dArray[i] = (unsigned char*) malloc(arraySizeY*sizeof(unsigned char));  
+   unsigned char** image_matrix;  
+   image_matrix = (unsigned char**) malloc(dim_x*sizeof(unsigned char*));  
+   for (int i = 0; i < dim_x; i++)  
+      image_matrix[i] = (unsigned char*) malloc(dim_y*sizeof(unsigned char));  
 
-   return my2dArray;  
+   return image_matrix;  
 }   
 
 /*free 2d Array*/
-int free2dintArray (unsigned char** my2dArray)
+int image_matrix_free (unsigned char** image_matrix)
 {
    for (int i = 0; i < width; i++)
    {  
-      free(my2dArray[i]);  
+      free(image_matrix[i]);  
    }  
-   free(my2dArray);
+   free(image_matrix);
 
    return 0;
 }
 
 /*convert raw_image to nxn Matrix*/
-unsigned char** convertRaw2Matrix(unsigned char *raw_image)
+unsigned char** image_rawimage_to_imageatrix(unsigned char *raw_image)
 {
 
-   unsigned char** imageMatrix = create2dintArray(width,height);
+   unsigned char** image_matrix = image_matrix_create(width,height);
    int i = 0;
    int j = 0;
    int tmp = 0;
@@ -158,15 +158,15 @@ unsigned char** convertRaw2Matrix(unsigned char *raw_image)
    {
       for( i = 0; i < width; i++ )
       {
-         imageMatrix[j][i] = raw_image[tmp+i];
+         image_matrix[j][i] = raw_image[tmp+i];
       }
       tmp = tmp + i;
    }
-   return imageMatrix;
+   return image_matrix;
 }
 
 /*convert nxn Matrix to raw_image */
-unsigned char* convertMatrix2Raw(unsigned char** imageMatrix)
+unsigned char* image_matrix_to_raw(unsigned char** imageMatrix)
 {
    unsigned char * raw_image_return = (unsigned char*)malloc( width*height*2 );
    int i = 0;
@@ -185,7 +185,7 @@ unsigned char* convertMatrix2Raw(unsigned char** imageMatrix)
 
 
 /*print nxn Matrix*/
-int printImageMatrix(unsigned char** Matrix)
+int image_matrix_print(unsigned char** image_matrix)
 {
    int i = 0;
    int j = 0;
@@ -193,28 +193,44 @@ int printImageMatrix(unsigned char** Matrix)
    {
       for( i = 0; i < width; i++ )
       {
-         printf("%d\t",Matrix[j][i]);
+         printf("%d\t",image_matrix[j][i]);
       }
       printf("\n");
    }
    return 0;
 }
 
-int get_height()
+int image_get_height()
 {
    return height;
 }
 
-int get_width()
+int image_get_width()
 {
    return width;
 }
 
-/*backgroundsubstraction*/
-//TODO
-void bgsubstraction(int** input_matrix, int** output_bg_matrix, int** output_fg_matrix) {
+
+/*create an white image with a white stripe */
+void image_create_white_stripe(unsigned char** emtpy_matrix, int dim_x, int dim_y, int stripe_line)
+{
+   int i = 0;
+   int j = 0;  
+   for( j = 0; j < dim_x; j++)
+   {
+      for( i = 0; i < dim_y; i++ )
+      {
+         emtpy_matrix[j][i] = 190;
+      }
+
+   }
+      for( i = 0; i < 10; i++ )
+      {
+         emtpy_matrix[stripe_line][i] = 0;
+      }
 
 }
+
 
 
 
