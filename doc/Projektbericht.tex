@@ -11,7 +11,8 @@
 	Institut für Informatik \\
 	SoSe 2013 \\ \ \\
 	Softwareprojekt Telematik: \\ \ \\
-	\textbf {Portierung von OpenCV auf RIOT OS} \\ \ \\
+	\textbf {Portierung von OpenCV auf RIOT OS} \\
+	\textbf {am Beispiel von BackgroundSubtractorMOG} \\ \ \\
 	Projektbericht \\ \ \\}
 \author{Daniel Akrap  \textless\href{mailto:daniel.akrap@fu-berlin.de}{daniel.akrap@fu-berlin.de}\textgreater
         \and Lidia Krus \textless\href{mailto:ruskrus@gmail.com}{ruskrus@gmail.com}\textgreater 		\\ \\
@@ -33,7 +34,7 @@ Das Ziel des Softwareprojektes ist die Portierung von OpenCV auf das Betriebssys
 
 \begin{itemize}
 \item Einleitung
-\item Our work
+\item Entwicklung der Aufgabenstellung
 \item Musteranwendung für RIOT OS
 \item Zusammenfassung und Ausblick
 \item Anhang
@@ -71,13 +72,18 @@ Die Portierung von OpenCV auf RIOT ermöglicht Bildverarbeitung in Echtzeit auf 
 Da im Projekt SAFEST der erste Bildverarbeitungsschritt auf die Vorverarbeitung auf der Node mittels Separierung von Personen und Menschenansammlungen von dem Hintergrund zwecks Verringerung des Datenumfangs ausgerichtet ist, haben wir uns für den folgenden Anwendungsfall als Vorgabe für unsere Anwendung entschieden: 
 
 \begin{itemize}
-\item Das Programm bekommt ein Bild (oder Videostream?) als Eingabe
-\item Das Programm berechnet Hintergrund, entfernt ihn und gibt das verarbeitete Bild zurück
+\item Das Programm bekommt ein Bild als Eingabe
+\item Das Programm erzeugt eine Serie der Beispielbilder und schickt sie an bgsubtractor
+\item bgsubtractor berechnet Hintergrund, entfernt ihn und speichert das letzte ergebnis in einem file
 \end{itemize}
 
 \subsection{Projektplanung}
 
-Milestones: ein c++ Programm lauffähig auf RIOT; Algorithmus zur Entfernung des Hintergrunds;
+Milestones: \\
+- ein c++ Programm lauffähig auf RIOT; \newline
+- Einlesen und Schreiben der (Bild)Dateien unter RIOT möglich; \newline
+- Unterstützung der benutzten Datentypen sichergestellt; \newline
+- Anwendung zur Hintergrundentfernung erstellt. \newline
 
 
 Das Projekt Portierung von OpenCV auf RIOT OS gliedert sich in vier Teilprobleme. Diese sind:
@@ -92,28 +98,16 @@ Die Arbeit an dem Projekt umfasste die Tätigkeiten zum Management, der Dokument
 
 /////ALTER PLAN
 
-\renewcommand{\arraystretch}{2}
-\begin{tabularx}{\textwidth}{lX}
-\textbf{23.04 - 30.04:} & 
 - Einrichten und Testen der Arbeitsumgebung \newline
 - Vertrautmachen mit dem Projekt SAFEST, RIOT OS, MSB-A2 und OpenCV \\
-
-\textbf{30.04 - 07.05:} & 
 - Test auf Machbarkeit der Portierung von OpenCV \newline
 - Festlegung der Aufgabenverteilung im Team \\
-
-\textbf{07.05 - 14.05:} & 
 - Beginn der Portierung von OpenCV auf die RIOT OS Plattform \\
-
-\textbf{14.05 - 11.06:} & 
 - Zusammenfassung des bisherigen Projektstandes und Vorbereitung der Präsentation \\
-
-\textbf{11.06 - 09.07:} & 
 - Portierung der für das Projekt SAFEST relevanten Module \newline
 - Testen und Fehlerbehebung \newline
 - Abschlussbericht \\ 
-\\\\\\\\
-\end{tabularx}
+
 
 
 \subsection{Stand der Technik}
@@ -132,11 +126,177 @@ Hardwareauswahl: Wir haben uns statt MSB-A2 für Native Port entschieden...
 Begründung: ....
 
 \newpage
-\section{Projektentwicklung}
+\section{Entwicklung der Aufgabenstellung}
 Während der Einarbeitungszeit hatten wir viele Schwierigkeiten aufgrund mangelhafter Dokumentation und öfteren Veränderungen am RIOT. Viel Zeit hat das Herausfinden des Grundes für das Nichtlaufen einfacher c++-Testprogramme unter RIOT gekostet. Letztendlich hat sich herausgestellt, dass die Unterstützung vieler grundlegender c++-Bibliotheken fehlt (wie fstream, iostream usw.), die z.B. mit Systemzugriff arbeiten, was für Portierbarkeit von OpenCV entscheidend wäre. Dadurch haben sich technische Anforderungen geändert und es wurde entschieden, mindestens zu versuchen, einen Beispielalgorithmus von OpenCV (Background Subtractor) in einer Musteranwendung einzusetzen. Als Nebenleistung sollte eine Hilfsdokumentation zur Benutzung von C++-Programmen unter RIOT erstellt werden. 
+
+
+hat sich krass geändert
+
+\subsection{Portierungsprobleme}
+
+\begin{itemize}
+\item Keine komplette Unterstützung der Standard C++ Bibliothek seitens RIOT OS
+\item Input/Output Stream Library wird nicht unterstützt
+\item Verschiedene Toolchain- und Bibliotheksversionen für die Zielplattformen
+\end{itemize}
+
+
+\begin{center}
+  \begin{tabular}{ | p{3cm} | p{3cm} | p{3cm} |}
+    \hline
+    Working \newline C headers & Working \newline C++ headers & Not working \newline headers \\ \hline
+cassert; \newline 
+cctype; \newline
+cerrno; \newline
+cfenv; \newline
+cfloat; \newline
+ciso646; \newline 
+climits; \newline
+clocale; \newline
+cmath; \newline
+csetjmp; \newline
+csignal; \newline
+cstdarg; \newline
+cstddef; \newline
+cstdint; \newline
+cstdio; \newline
+cstdlib; \newline
+cstring; \newline
+ctime; \newline
+cwchar; \newline
+cwctype & 
+
+chrono; \newline
+deque; \newline
+exception; \newline
+initializer\_list; \newline
+iosfwd; \newline
+limits; \newline
+list; \newline
+new; \newline
+numeric; \newline
+queue; \newline
+ratio; \newline
+set; \newline
+stack; \newline
+typeindex; \newline
+type\_traits; \newline
+typeinfo; \newline
+utility; \newline
+vector & 
+
+algorithm; \newline
+array; \newline
+atomic; \newline
+bitset; \newline
+condition\_variable; \newline
+complex; \newline
+forward\_list; \newline
+fstream; \newline
+functional; \newline
+future; \newline
+iomanip; \newline
+ios; \newline
+iostream; \newline
+istream; \newline
+iterator; \newline
+locale; \newline
+map; \newline
+memory; \newline
+mutex; \newline
+ostream; \newline
+random; \newline
+regex; \newline
+sstream; \newline
+stdexcept; \newline
+streambuf; \newline
+string; \newline
+system\_error; \newline
+thread; \newline
+tuple; \newline
+unordered\_map; \newline
+unordered\_set; \newline
+valarray \\
+    \hline
+  \end{tabular}
+\end{center}
+
+Beispiele für die Abhängigkeiten der nicht funktionierenden Headers mit OpenCV-Modulen: \\
+
+algorithm; array; atomic; bitset: \newline
+opencv-2.4.5/modules/features2d/src/freak.cpp \\
+
+condition\_variable; complex \newline
+opencv-2.4.5/modules/core/include/opencv2/core/core.hpp \newline
+opencv-2.4.5/3rdparty/openexr/Imath/ImathRoots.h \\
+
+forward\_list; fstream \newline
+opencv-2.4.5/modules/nonfree/test/test\_detectors.cpp \newline
+opencv-2.4.5/modules/ocl/src/initialization.cpp \newline
+opencv-2.4.5/modules/ocl/test/precomp.hpp \newline
+opencv-2.4.5/modules/gpu/test/test\_precomp.hpp \newline
+opencv-2.4.5/modules/gpu/test/nvidia/NCVTest.hpp \newline
+opencv-2.4.5/modules/core/test/test\_operations.cpp \newline
+opencv-2.4.5/modules/contrib/src/spinimages.cpp \newline
+opencv-2.4.5/modules/contrib/doc/facerec/src/facerec\_video.cpp \newline
+opencv-2.4.5/modules/contrib/doc/facerec/src/facerec\_fisherfaces.cpp \newline
+opencv-2.4.5/modules/contrib/doc/facerec/src/facerec\_save\_load.cpp \newline
+opencv-2.4.5/modules/contrib/doc/facerec/src/facerec\_eigenfaces.cpp \newline
+opencv-2.4.5/modules/contrib/doc/facerec/src/facerec\_demo.cpp \newline
+opencv-2.4.5/modules/contrib/doc/facerec/src/facerec\_lbph.cpp \newline
+opencv-2.4.5/modules/calib3d/src/circlesgrid.hpp \newline
+opencv-2.4.5/modules/calib3d/test/test\_affine3d\_estimator.cpp \newline
+opencv-2.4.5/modules/ml/test/test\_gbttest.cpp \newline
+opencv-2.4.5/modules/ml/test/test\_save\_load.cpp \newline
+opencv-2.4.5/modules/legacy/src/calonder.cpp \newline
+opencv-2.4.5/modules/legacy/test/test\_optflow.cpp \newline
+opencv-2.4.5/modules/video/test/test\_tvl1optflow.cpp \newline
+opencv-2.4.5/modules/video/test/test\_estimaterigid.cpp \newline
+opencv-2.4.5/modules/features2d/src/freak.cpp \newline
+opencv-2.4.5/modules/features2d/src/brisk.cpp \newline
+opencv-2.4.5/samples/ocl/hog.cpp \newline
+opencv-2.4.5/samples/gpu/optical\_flow.cpp \newline
+opencv-2.4.5/samples/gpu/hog.cpp \newline
+opencv-2.4.5/samples/c/find\_obj\_calonder.cpp \newline
+opencv-2.4.5/samples/cpp/pca.cpp \newline
+opencv-2.4.5/samples/cpp/matching\_to\_many\_images.cpp \newline
+opencv-2.4.5/samples/cpp/videostab.cpp \newline
+opencv-2.4.5/samples/cpp/convexhull.cpp \newline
+opencv-2.4.5/samples/cpp/bagofwords\_classification.cpp \newline
+opencv-2.4.5/samples/cpp/detector\_descriptor\_evaluation.cpp \newline
+opencv-2.4.5/samples/cpp/facerec\_demo.cpp \newline
+opencv-2.4.5/samples/cpp/stitching.cpp \newline
+opencv-2.4.5/samples/cpp/detector\_descriptor\_matcher\_evaluation.cpp \newline
+opencv-2.4.5/samples/cpp/tvl1\_optical\_flow.cpp \newline
+opencv-2.4.5/samples/cpp/stitching\_detailed.cpp \newline
+opencv-2.4.5/apps/traincascade/imagestorage.cpp \newline
+opencv-2.4.5/3rdparty/openexr/IlmImf/ImfTiledOutputFile.cpp \newline
+opencv-2.4.5/3rdparty/openexr/IlmImf/ImfStdIO.h \newline
+opencv-2.4.5/3rdparty/openexr/IlmImf/ImfOutputFile.cpp \newline
+opencv-2.4.5/3rdparty/openexr/IlmImf/ImfInputFile.cpp \newline
+opencv-2.4.5/3rdparty/openexr/IlmImf/ImfInputFile.h \newline
+opencv-2.4.5/android/service/engine/jni/BinderComponent/ProcReader.cpp \\
+
+
+functional \newline
+opencv-2.4.5/modules/ocl/src/brute\_force\_matcher.cpp
+opencv-2.4.5/modules/imgproc/src/generalized\_hough.cpp
+opencv-2.4.5/modules/gpu/include/opencv2/gpu/device/functional.hpp
+opencv-2.4.5/modules/gpu/src/precomp.hpp
+opencv-2.4.5/modules/gpu/test/test\_precomp.hpp
+opencv-2.4.5/modules/stitching/src/precomp.hpp
+opencv-2.4.5/modules/contrib/src/spinimages.cpp
+opencv-2.4.5/modules/calib3d/test/test\_affine3d\_estimator.cpp
+opencv-2.4.5/modules/calib3d/test/test\_chesscorners.cpp
+opencv-2.4.5/modules/highgui/src/window\_w32.cpp
+opencv-2.4.5/samples/cpp/bagofwords\_classification.cpp
+
+
+
 
 \newpage
 \section{Musteranwendung für RIOT OS}
+
 
 Da im Projekt SAFEST der erste Bildverarbeitungsschritt auf die Vorverarbeitung auf der Node mittels Separierung von Personen und Menschenansammlungen von dem Hintergrund zwecks Verringerung des Datenumfangs ausgerichtet ist, haben wir uns für den folgenden Anwendungsfall als Vorgabe für unsere Anwendung entschieden: 
 
@@ -149,11 +309,18 @@ Für den Anwendungsfall \glqq Hintergrundentfernung\grqq standen zwei mögliche 
 
 Aufgrund der mangelhaften Unterstützung vieler C++-Bibliotheken unter RIOT, was die Portierung erheblich erschwerte, haben wir uns für die zweite Alternative entschieden. Dafür war das Kennenlernen des OpenCV-Algorithmus zur Entfernung des Hintergrunds erforderlich. \\
 
+\subsection{Algorithmus zur Hintergrundentfernung}
+
+basiert auf improved ....
+
+\subsection{Implementierung der Operationen mit Dateien und Bildern}
+
+alles selba gemacht
+
+\subsection{Implementierung des Algorithmus zur Hintergrundentfernung}
 
 .... Vielleicht paar Tabellen oder Klassendiagrammen...  bla bla
-
 (dies und das haben wir gemacht)
-
 
 \newpage
 \section{Zusammenfassung und Ausblick}
@@ -173,6 +340,9 @@ Als Positiv hat sich dies und das erwiesen.
 
 - Glossar
 
+gaussian mixtures
+background subtraction usw
+
 
 \newpage
 \section{Quellen}
@@ -185,11 +355,12 @@ Als Positiv hat sich dies und das erwiesen.
 \end{itemize}
 
 \subsection*{Veröffentlichungen zu den betreffenden Projekten} 
-- die 3 RIOT-Publikationen
-- OpenCV Portierung Beispiele
-- Literatur zu Bildverarbeitung mit Schwerpunkt auf Hintergrundentfernung
+\begin{itemize}
 
+\item KaewTraKulPong P., Bowden R., An Improved Adaptive Background Mixture Model for Real-time Tracking with Shadow Detection. In Proc. 2nd European Workshop on Advanced Video Based Surveillance Systems, AVBS01, Sept 2001. \newline (\textless\href{http://personal.ee.surrey.ac.uk/Personal/R.Bowden/publications/avbs01/avbs01.pdf}{http://personal.ee.surrey.ac.uk/Personal/R.Bowden/publications/avbs01/avbs01.pdf}\textgreater)
 
+\item Baccelli E., Hahm O., Wählisch M., Günes M., Schmidt T., RIOT: One OS to Rule Them All in the IoT. INRIA, Research Report, No. RR-8176, Dec. 2012. \newline (\textless\href{http://hal.inria.fr/hal-00768685/}{http://hal.inria.fr/hal-00768685/}\textgreater)
 
+\end{itemize}
 
 \end{document}
