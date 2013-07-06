@@ -1,3 +1,4 @@
+/* needed for background model */
 struct MixData {
    float sortKey;
    float weight;
@@ -5,7 +6,7 @@ struct MixData {
    float var;
 };
 
-
+/* does background subtraction for 1-channel 8-bit grayscale image */
 void process8uC1( unsigned char** image,
                          unsigned char** fgmask,
                          double learningRate,

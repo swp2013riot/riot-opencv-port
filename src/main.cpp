@@ -36,7 +36,7 @@ int main()
    raw_image = image_read_jpeg_file( infilename );
 
 
-   /*this examplae creates some test images*/
+   /*this example creates some test images*/
 
    /*create a frame list*/
    for(int i= 0; i<6; i++)
@@ -50,7 +50,7 @@ int main()
    for (list<unsigned char**>::const_iterator it = frame_list.begin(); it != frame_list.end(); ++it)
    {
 
-      image_create_white_stripe(*it,10, 10, line );
+      image_create_stripe(*it,10, 10, line );
       //image_matrix_print(*it);printf("\n");
       line++;
    }

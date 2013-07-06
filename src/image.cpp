@@ -211,8 +211,8 @@ int image_get_width()
 }
 
 
-/*create an white image with a white stripe */
-void image_create_white_stripe(unsigned char** emtpy_matrix, int dim_x, int dim_y, int stripe_line)
+/*create an gray image with a black stripe */
+void image_create_stripe(unsigned char** emtpy_matrix, int dim_x, int dim_y, int stripe_line)
 {
    int i = 0;
    int j = 0;  
@@ -220,13 +220,13 @@ void image_create_white_stripe(unsigned char** emtpy_matrix, int dim_x, int dim_
    {
       for( i = 0; i < dim_y; i++ )
       {
-         emtpy_matrix[j][i] = 190;
+         emtpy_matrix[j][i] = 190;     // gray image
       }
 
    }
       for( i = 0; i < 10; i++ )
       {
-         emtpy_matrix[stripe_line][i] = 0;
+         emtpy_matrix[stripe_line][i] = 0;  // black stripe
       }
 
 }
