@@ -9,6 +9,16 @@
 #undef L
 #undef T
 
+/*
+ This program is based on the OpenCV implementation of the following algorithm:
+ "An Improved Adaptive Background Mixture Model for Real-time Tracking with Shadow Detection" by P. KaewTraKulPong and R. Bowden
+ http://personal.ee.surrey.ac.uk/Personal/R.Bowden/publications/avbs01/avbs01.pdf
+
+ Location of the related OpenCV file is: opencv-2.4.5/modules/video/src/bgfg_gaussmix.cpp
+
+ We have modified the OpenCV code according to the resources and datatypes we are using.
+ As a result, background subtraction for grayscale images is supported.
+*/
 
 typedef unsigned char uchar;
 
@@ -17,7 +27,7 @@ typedef unsigned char uchar;
 static const double defaultNoiseSigma = 30*0.5;
 static const double defaultInitialWeight = 0.05;
 
-
+/* does background subtraction for a 1-channel 8-bit (grayscale) image */
 void process8uC1( unsigned char** image,
                          unsigned char** fgmask,
                          double learningRate,
