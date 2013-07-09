@@ -30,8 +30,16 @@
 Das Ziel des Softwareprojektes ist die Portierung von OpenCV auf das Betriebssystem RIOT mit Bezug auf Projekt SAFEST, dessen Ziel die Verbesserung der Sicherheit an Flughäfen mittels Überwachung von Menschenansammlungen ist. Die Portierung von OpenCV auf RIOT ermöglicht Bildverarbeitung in Echtzeit auf der Plattform RIOT und erweitert damit die Möglichkeiten im Bereich des Internet of Things. \\
 
 \newpage
-\tableofcontents
-\setcounter{tocdepth}{3}
+\section*{Inhaltsverzeichnis}
+
+\begin{itemize}
+\item Einleitung
+\item Entwicklung der Aufgabenstellung
+\item Musteranwendung für RIOT OS
+\item Zusammenfassung und Ausblick
+\item Anhang
+\item Quellen
+\end{itemize}
 
 \newpage
 \section{Einleitung}
@@ -134,93 +142,28 @@ hat sich krass geändert
 
 
 \begin{center}
-  \begin{tabular}{ | p{3cm} | p{3cm} | p{3cm} |}
+  \begin{tabular}{ | p{10cm} | }
     \hline
-    Working \newline C headers & Working \newline C++ headers & Not working \newline headers \\ \hline
-cassert; \newline 
-cctype; \newline
-cerrno; \newline
-cfenv; \newline
-cfloat; \newline
-ciso646; \newline 
-climits; \newline
-clocale; \newline
-cmath; \newline
-csetjmp; \newline
-csignal; \newline
-cstdarg; \newline
-cstddef; \newline
-cstdint; \newline
-cstdio; \newline
-cstdlib; \newline
-cstring; \newline
-ctime; \newline
-cwchar; \newline
-cwctype & 
+    Not working C++ headers \\ \hline
 
-chrono; \newline
-deque; \newline
-exception; \newline
-initializer\_list; \newline
-iosfwd; \newline
-limits; \newline
-list; \newline
-new; \newline
-numeric; \newline
-queue; \newline
-ratio; \newline
-set; \newline
-stack; \newline
-typeindex; \newline
-type\_traits; \newline
-typeinfo; \newline
-utility; \newline
-vector & 
+algorithm; array; atomic; bitset; condition\_variable; complex; \newline
+forward\_list; fstream; functional; future; iomanip; ios; iostream; \newline 
+istream; iterator; locale; map; memory; mutex; ostream; random; \newline
+regex; sstream; stdexcept; streambuf; string; system\_error; \newline
+thread; tuple; unordered\_map; unordered\_set; valarray \\
 
-algorithm; \newline
-array; \newline
-atomic; \newline
-bitset; \newline
-condition\_variable; \newline
-complex; \newline
-forward\_list; \newline
-fstream; \newline
-functional; \newline
-future; \newline
-iomanip; \newline
-ios; \newline
-iostream; \newline
-istream; \newline
-iterator; \newline
-locale; \newline
-map; \newline
-memory; \newline
-mutex; \newline
-ostream; \newline
-random; \newline
-regex; \newline
-sstream; \newline
-stdexcept; \newline
-streambuf; \newline
-string; \newline
-system\_error; \newline
-thread; \newline
-tuple; \newline
-unordered\_map; \newline
-unordered\_set; \newline
-valarray \\
     \hline
   \end{tabular}
 \end{center}
 
-Beispiele für die Abhängigkeiten der nicht funktionierenden Headers mit OpenCV-Modulen: \\
+Abhängigkeitsbeispiele von OpenCV-Modulen und genannten Headern: \\
 
 algorithm; array; atomic; bitset: \newline
-opencv-2.4.5/modules/features2d/src/freak.cpp \\
+opencv-2.4.5/modules/features2d/src/freak.cpp \newline
 
 condition\_variable; complex \newline
 opencv-2.4.5/modules/core/include/opencv2/core/core.hpp \newline
-opencv-2.4.5/3rdparty/openexr/Imath/ImathRoots.h \\
+opencv-2.4.5/3rdparty/openexr/Imath/ImathRoots.h \newline
 
 forward\_list; fstream \newline
 opencv-2.4.5/modules/nonfree/test/test\_detectors.cpp \newline
@@ -267,23 +210,22 @@ opencv-2.4.5/3rdparty/openexr/IlmImf/ImfStdIO.h \newline
 opencv-2.4.5/3rdparty/openexr/IlmImf/ImfOutputFile.cpp \newline
 opencv-2.4.5/3rdparty/openexr/IlmImf/ImfInputFile.cpp \newline
 opencv-2.4.5/3rdparty/openexr/IlmImf/ImfInputFile.h \newline
-opencv-2.4.5/android/service/engine/jni/BinderComponent/ProcReader.cpp \\
-
+opencv-2.4.5/android/service/engine/jni/BinderComponent/ProcReader.cpp \newline
 
 functional \newline
-opencv-2.4.5/modules/ocl/src/brute\_force\_matcher.cpp
-opencv-2.4.5/modules/imgproc/src/generalized\_hough.cpp
-opencv-2.4.5/modules/gpu/include/opencv2/gpu/device/functional.hpp
-opencv-2.4.5/modules/gpu/src/precomp.hpp
-opencv-2.4.5/modules/gpu/test/test\_precomp.hpp
-opencv-2.4.5/modules/stitching/src/precomp.hpp
-opencv-2.4.5/modules/contrib/src/spinimages.cpp
-opencv-2.4.5/modules/calib3d/test/test\_affine3d\_estimator.cpp
-opencv-2.4.5/modules/calib3d/test/test\_chesscorners.cpp
-opencv-2.4.5/modules/highgui/src/window\_w32.cpp
-opencv-2.4.5/samples/cpp/bagofwords\_classification.cpp
+opencv-2.4.5/modules/ocl/src/brute\_force\_matcher.cpp \newline
+opencv-2.4.5/modules/imgproc/src/generalized\_hough.cpp \newline
+opencv-2.4.5/modules/gpu/include/opencv2/gpu/device/functional.hpp \newline
+opencv-2.4.5/modules/gpu/src/precomp.hpp \newline
+opencv-2.4.5/modules/gpu/test/test\_precomp.hpp \newline
+opencv-2.4.5/modules/stitching/src/precomp.hpp \newline
+opencv-2.4.5/modules/contrib/src/spinimages.cpp \newline
+opencv-2.4.5/modules/calib3d/test/test\_affine3d\_estimator.cpp \newline
+opencv-2.4.5/modules/calib3d/test/test\_chesscorners.cpp \newline
+opencv-2.4.5/modules/highgui/src/window\_w32.cpp \newline
+opencv-2.4.5/samples/cpp/bagofwords\_classification.cpp \\
 
-
+Vorhandene Unterstützung wäre also ein wichtiges Kriterium.  \\
 
 
 \newpage
