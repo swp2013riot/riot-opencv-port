@@ -42,13 +42,13 @@ Der Projektbericht beschreibt die Aufgabenstellung, die Planung, das Umfeld sowi
 
 \subsection{Aufgabenstellung}
 
-Der Schwerpunkt dieses Softwareprojektes liegt auf der Erschließung der Möglichkeiten zur Portierung von OpenCV auf das Betriebssystem RIOT im Rahmen des Projekts SAFEST (Social-Area Framework for Early Security Triggers at Airports). Das ist ein deutsch-französisches Gemeinschaftsprojekt zur Überwachung von Menschenansammlungen, die der Verbesserung der Sicherheit an Flughäfen dient. \\
+Der Schwerpunkt dieses Softwareprojekts liegt auf der Erschließung der Möglich-keiten zur Portierung von OpenCV auf das Betriebssystem RIOT. \\
 
-Die Daten zur Überwachung von von Menschenansammlungen werden mit Videokameras aufgenommen und sollen mit der Graphikbibliothek OpenCV (Open Source Computer Vision Library) verarbeitet werden. Diese Bibliothek enthält Algorithmen für Bildverarbeitung und Maschinelles Sehen mit Fokus auf Echtzeitfähigkeit. 
+Die vorliegende Arbeit hat Bezug zum Projekt SAFEST (Social-Area Framework for Early Security Triggers at Airports). Das ist ein deutsch-französisches Gemeinschaftsprojekt zur Überwachung von Menschenansammlungen, die der Verbesserung der Sicherheit an Flughäfen dient. Die Daten zur Überwachung von von Menschenansammlungen werden mit Videokameras aufgenommen und sollen mit der Graphikbibliothek OpenCV (Open Source Computer Vision Library) verarbeitet werden. Diese Bibliothek enthält Algorithmen für Bildverarbeitung und Maschinelles Sehen mit Fokus auf Echtzeitfähigkeit. \\
 
-Im Rahmen des Softwareprojekts Telematik wird ein Versuch unternommen, diese Bibliothek auf das Betriebssystem RIOT zu portieren. Das Mikrokernel-Betriebssystem RIOT ist für Geräte mit eingeschränkten Ressourcen besonders gut geeignet. RIOT OS ist modular aufgebaut, unterstützt Multithreading und ist echtzeitfähig. \\
+Im Rahmen des Softwareprojekts Telematik wird ein Versuch unternommen, diese Bibliothek auf das Betriebssystem RIOT OS zu portieren. Das Mikrokernel-Betriebssystem RIOT soll unterschiedlichsten Software-Anforderungen an die Geräte im Internet of Things (IoT) entsprechen [Baccelli et al. 2012: 3]. RIOT OS ist modular aufgebaut, unterstützt Multithreading und ist echtzeitfähig. \\
 
-Die Portierung von OpenCV auf RIOT ermöglicht Bildverarbeitung in Echtzeit auf der Plattform RIOT und erweitert damit die Möglichkeiten im Bereich des Internet of Things. \\
+Die Portierung von OpenCV auf RIOT ermöglicht Bildverarbeitung in Echtzeit auf der Plattform RIOT und erweitert damit die Möglichkeiten im IoT-Bereich. \\
 
 Da im Projekt SAFEST der erste Bildverarbeitungsschritt auf die Vorverarbeitung auf der Node mittels Separierung von Personen und Menschenansammlungen von dem Hintergrund zwecks Verringerung des Datenumfangs ausgerichtet ist, haben wir uns für den folgenden Anwendungsfall als Vorgabe für unsere Testanwendung entschieden: 
 
@@ -56,18 +56,18 @@ Da im Projekt SAFEST der erste Bildverarbeitungsschritt auf die Vorverarbeitung 
 \item Das Programm bekommt eine Reihe von Bildern als Eingabe.
 \item Diese Bildern werden an die Funktion zur Hintergrundentfernung übergeben. 
 \item Die Funktion berechnet Hinter- und Vordergrund und aktualisiert das Hintergrundmodell.
-\item Die Funktion erzeugt eine neue Bilddatei als Ergebnis der Hintergrundentfernung am letzten Bild, das es bekommen hat. Diejenigen Pixel, die zum Hintergrund gehören, sind auf diesem Bild schwarz dargestellt, die Vordergrundpixel haben weiße Farbe.
+\item Die Funktion erzeugt eine neue Bilddatei als Ergebnis der Hintergrundentfernung am letzten Bild, das es bekommen hat. Diejenigen Pixel, die zum Hintergrund gehören, sind auf diesem Bild schwarz dargestellt, die Vordergrundpixel bekommen weiße Farbe.
 \end{itemize}
 
-Dieser Anwendungsfall setzt die Portierung der Funktionalität zur Hintergrundentfernung eines für das Projekt SAFEST relevanten OpenCV-Moduls <video> voraus.
+Dieser Anwendungsfall setzt die Portierung der Funktionalität zur Hintergrundentfernung aus dem für das Projekt SAFEST relevanten OpenCV-Modul {\it video} voraus.
 
 \subsection{Stand der Technik}
 
-In unserem Projekt haben wir mit OpenCV (Version 2.4.5) und RIOT OS (Stand April-Mai 2013) gearbeitet.  \newline
+In unserem Projekt haben wir mit OpenCV (Version 2.4.5) und RIOT OS (Stand April-Mai 2013) gearbeitet.  \\
 
-Programmentwicklung unter RIOT OS erfolgt mit den Standardentwicklungswerkzeugen wie gcc, gdb in den Programmiersprachen C oder C++. Das Betriebssystem wird aktiv weiter entwickelt und wird regelmäßig aktualisiert. \newline
+Programmentwicklung unter RIOT OS erfolgt mit den Standardentwicklungswerkzeugen wie gcc, gdb in den Programmiersprachen C oder C++. Das Betriebssystem wird aktiv weiter entwickelt und wird regelmäßig aktualisiert. \\
 
-OpenCV ist in C und (ab Version 2.0) in C++ implementiert. \newline
+OpenCV ist in C und (ab Version 2.0) in C++ implementiert.
 
 \subsection{Projektplanung}
 
@@ -219,24 +219,23 @@ Als Ergebnis der obenbeschriebenen Untersuchungen haben sich die technischen Anf
 
 \subsection{Hintergrundentfernung: Motivation}
 
-\begin{itemize}
-\item Eine der grundlegenden Methoden in Computer Vision
-\item Typischer Anwendungsfall: Szenenanalyse in Videoüberwachung (Segmentierung in Echtzeit - relevant für das Projekt SAFEST).
-\end{itemize}
+Im Prozess des maschinellen Sehens ist Bildsegmentierung üblicherweise der erste Schritt der Bildanalyse. Unter Segmentierung versteht man die Erzeugung von ihnaltlich zusammengehörenden Regionen durch Zusammenfassung benachbarter Pixel entsprechend einem Homogenitätskritärium. Ein typischer Anwendungsfall dafür ist Szenenanalyse in der Videoüberwachung, wobei Segmentierung in Echtzeit erfolgt. Eine der grundlegenden Methoden ist dabei Subtraktion des Hintergrunds. Es wurden viele Hintergrundmodelle entwickelt, die zur Lösung verschiedener Problemstellungen dienen. Ihnen ist gemeinsam, dass dabei angenommen wird, dass die Szenen bzw. Bildregionen ohne eindringende Objekte ein bestimmtes regelmäßiges Verhalten aufweisen, das mit einem statistischen Modell beschrieben werden kann. Eindringende Objekte können dementsprechend durch die Erkundung der in dieses statistische Modell nicht reinpassenden Bildteile bestimmt werden. \\
+
+Da in dem für uns relevanten Projekt SAFEST Hintergrundentfernung einen großen Vorteil der Reduzierung des Speicherverbrauchs bei der Verarbeitung der Daten der Videoüberwachung bringen könnte; und aufgrund der mangelhaften Unterstützung vieler C++-Bibliotheken unter RIOT, was die komplette Portierung erheblich erschwerte, - haben wir für das Herausnehmen und Anpassen des OpenCV-Algorithmus zur Entfernung des Hintergrunds entschieden. Dafür war das Kennenlernen dieses Algorithmus erforderlich. 
 
 \subsection{Algorithmus zur Hintergrundentfernung}
 
-Aufgrund der mangelhaften Unterstützung vieler C++-Bibliotheken unter RIOT, was die Portierung erheblich erschwerte, haben wir uns für das Herausnehmen und Anpassen des OpenCV-Algorithmus zur Entfernung des Hintergrunds entschieden. Dafür war das Kennenlernen dieses Algorithmus erforderlich. \\
-
-Das von uns gewählte Algorithmus BackgroundSubtractorMOG von OpenCV basiert auf dem theoretischen Modell, das in der Arbeit {\it An Improved Adaptive Background Mixture Model for Real-Time Tracking with Shadow Detection} (KaewTraKulPong, Bowden 2001) vorgestellt ist. \\
+Das von uns gewählte Algorithmus BackgroundSubtractorMOG von OpenCV basiert auf dem theoretischen Modell, das in der Arbeit {\it An Improved Adaptive Background Mixture Model for Real-Time Tracking with Shadow Detection} [KaewTraKulPong, Bowden 2001] vorgestellt ist. \\
 
 Dieses Modell nutzt den pixel-basierten Ansatz zur Hintergrundentfernung: für jedes einzelne Pixel wird eine Wahrscheinlichkeitsdichtefunktion erstellt, die zur Entscheidung herangezogen wird, ob der gegebene Pixel zum Hinter- oder zum Vordergrund gehört. \\
 
-// todo: Algo-Beschreibung. 
+Die Implementierung von OpenCV unterscheidet sich von diesem theoretischen Modell dadurch, dass BackgroundSubtractorMOG keine Schattenerkennung macht. 
 
 \subsection{Unsere Implementierung}
 
-Unsere Quellcode umfasst 5 Dateien: image.h, image.cpp, bgfg\_gaussmix.h, bgfg\_gaussmix.cpp, main.cpp sowie Makefiles für das Testen unter Linux bzw. unter RIOT OS. Wir importieren eine geringe Anzahl an den seitens RIOT unterstützten Bibliotheken und zwar: stdio.h, stdlib.h, float.h, math.h, jpeglib.h, list, algorithm. \\
+Unser Quellcode umfasst 5 Dateien: {\it image.h, image.cpp, bgfg\_gaussmix.h,
+
+ bgfg\_gaussmix.cpp, main.cpp} sowie Makefiles für das Testen unter Linux bzw. unter RIOT OS. Wir importieren eine geringe Anzahl an den seitens RIOT unterstützten Bibliotheken und zwar: {\it stdio.h, stdlib.h, float.h, math.h, jpeglib.h, list, algorithm}. \\
 
 a) Implementierung nötiger Operationen mit Dateien und Bildern \\
 
@@ -244,9 +243,11 @@ In der Datei image.cpp werden die grundlegenden Funktionalitäten zum Lesen und 
 
 b) Implementierung der Funktionalität zur Hintergrundentfernung \\
 
-Hier wird vor allem die Funktion process8uC1() aus dem BackgroundSubtractorMOG an unsere Anwendung angepasst. Sie stellt die Möglichkeit zur Hintergrundentfernung an den schwarz-weißen 8-bit Bildern bereit. Entfernung des Hintergrunds geschieht analog zu den Anweisungen im OpenCV-Algorithmus, die vorgenommenen Änderungen betreffen nur die Realisierung und nicht die Logik des Algorithmus. \\
+Hier wird vor allem die Funktion {\it process8uC1()} aus dem BackgroundSubtractorMOG an unsere Anwendung angepasst. Sie stellt die Möglichkeit zur Hintergrundentfernung an den schwarz-weißen 8-bit Bildern bereit. Entfernung des Hintergrunds geschieht analog zu den Anweisungen im OpenCV-Algorithmus, die vorgenommenen Änderungen betreffen nur die Realisierung und nicht die Logik des Algorithmus. \\
 
-// todo: Implementierungsbeschreibung (Evtl. mit einem Klassendiagramm zur Anschaulichkeit)
+c) Testfall \\
+
+Die Datei main.cpp mit dem entsprechenden Makefile wurden zum Testen des Ablaufs der Hintergrundentfernung auf dem Plattform RIOT entwickelt. Entsprechend dem am Anfang postulierten Anwendungsfall werden beim Testen nach dem Dateieinlesen 6 Bildmatritzen erzeugt, die einen grauen Viereck mit einem schwarzen Streifen darstellen. Der Streifen befindet sich auf jedem Bild an einer anderen Stelle und soll als dynamischer Vordergrund interpretiert werden. Die graue Fläche stellt Hintergrund dar. Diese Bildmatritzen und sonstige nötigen Parameter wie Hintergrundmodell, Lernrate, Bilddimensionen, Varianz-Schwellenwert u.a. werden von der Funktion {\it process8uC1()} abgearbeiten und das Ergebnis der Hintergrundentfernung auf dem letzten Bild wird in der Datei {\it fg\_image.jpg} gespeichert. Das Ergebnisbild ist schwarz und hat einen weißen Streifen an der Position des schwarzen Streifens aus dem letzten interpretierten Bild. Das zeugt davon, dass unser Programm die Hintergrundentfernung richtig gemacht hat: der Schwarzbereich gehört zum Hintergrund, das Objekt - der Streifen - gehört zum Vordergrund und wird weiß markiert.
 
 \newpage
 \section{Zusammenfassung und Ausblick}
