@@ -1,5 +1,0 @@
-cmake_minimum_required(VERSION 2.8)
-project( bgs_project )
-find_package( OpenCV REQUIRED )
-add_executable( probe main.cpp )
-target_link_libraries( probe ${OpenCV_LIBS} )
