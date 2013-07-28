@@ -18,7 +18,7 @@
         \and Lidia Krus \textless\href{mailto:ruskrus@gmail.com}{ruskrus@gmail.com}\textgreater 		\\ \\
 	Betreuerin: Dipl.-Inform. Alexandra Danilkina \\ 
 	\textless\href{mailto:alexandra.danilkina@fu-berlin.de}{alexandra.danilkina@fu-berlin.de}\textgreater}
-\date{09. Juli 2013}
+\date{30. Juli 2013}
 
 \begin{document}
 
@@ -44,9 +44,9 @@ Der Projektbericht beschreibt die Aufgabenstellung, die Planung, das Umfeld sowi
 
 Der Schwerpunkt dieses Softwareprojekts liegt auf der Erschließung der Möglich-keiten zur Portierung von OpenCV auf das Betriebssystem RIOT. \\
 
-Die vorliegende Arbeit hat Bezug zum Projekt SAFEST (Social-Area Framework for Early Security Triggers at Airports). Das ist ein deutsch-französisches Gemeinschaftsprojekt zur Überwachung von Menschenansammlungen, die der Verbesserung der Sicherheit an Flughäfen dient. Die Daten zur Überwachung von von Menschenansammlungen werden mit Videokameras aufgenommen und sollen mit der Graphikbibliothek OpenCV (Open Source Computer Vision Library) verarbeitet werden. Diese Bibliothek enthält Algorithmen für Bildverarbeitung und Maschinelles Sehen mit Fokus auf Echtzeitfähigkeit. \\
+Die vorliegende Arbeit hat Bezug zum Projekt SAFEST (Social-Area Framework for Early Security Triggers at Airports). Das ist ein deutsch-französisches Gemeinschaftsprojekt zur Überwachung von Menschenansammlungen, die der Verbesserung der Sicherheit an Flughäfen dient [1]. Die Daten zur Überwachung von von Menschenansammlungen werden mit Videokameras aufgenommen und sollen mit der Graphikbibliothek OpenCV (Open Source Computer Vision Library) verarbeitet werden. Diese Bibliothek enthält Algorithmen für Bildverarbeitung und Maschinelles Sehen mit Fokus auf Echtzeitfähigkeit [2]. \\
 
-Im Rahmen des Softwareprojekts Telematik wird ein Versuch unternommen, diese Bibliothek auf das Betriebssystem RIOT OS zu portieren. Das Mikrokernel-Betriebssystem RIOT soll unterschiedlichsten Software-Anforderungen an die Geräte im Internet of Things (IoT) entsprechen [Baccelli et al. 2012: 3]. RIOT OS ist modular aufgebaut, unterstützt Multithreading und ist echtzeitfähig. \\
+Im Rahmen des Softwareprojekts Telematik wird ein Versuch unternommen, diese Bibliothek auf das Betriebssystem RIOT OS zu portieren. Das Mikrokernel-Betriebssystem RIOT soll unterschiedlichsten Software-Anforderungen an die Geräte im Internet of Things (IoT) entsprechen [4]. RIOT OS ist modular aufgebaut, unterstützt Multithreading und ist echtzeitfähig [3]. \\
 
 Die Portierung von OpenCV auf RIOT ermöglicht Bildverarbeitung in Echtzeit auf der Plattform RIOT und erweitert damit die Möglichkeiten im IoT-Bereich. \\
 
@@ -55,8 +55,7 @@ Da im Projekt SAFEST der erste Bildverarbeitungsschritt auf die Vorverarbeitung 
 \begin{itemize}
 \item Das Programm bekommt eine Reihe von Bildern als Eingabe.
 \item Diese Bildern werden an die Funktion zur Hintergrundentfernung übergeben. 
-\item Die Funktion berechnet Hinter- und Vordergrund und aktualisiert das Hintergrundmodell.
-\item Die Funktion erzeugt eine neue Bilddatei als Ergebnis der Hintergrundentfernung am letzten Bild, das es bekommen hat. Diejenigen Pixel, die zum Hintergrund gehören, sind auf diesem Bild schwarz dargestellt, die Vordergrundpixel bekommen weiße Farbe.
+\item Die Funktion wendet das MOG-Modell auf die Bilder an und speichert das letzte Ergebnis in einer Bilddatei.
 \end{itemize}
 
 Dieser Anwendungsfall setzt die Portierung der Funktionalität zur Hintergrundentfernung aus dem für das Projekt SAFEST relevanten OpenCV-Modul {\it video} voraus.
@@ -73,19 +72,13 @@ OpenCV ist in C und (ab Version 2.0) in C++ implementiert.
 
 Die Arbeit an dem Projekt umfasste die Tätigkeiten zum Management, der Dokumentation und der Außendarstellung des Projekts mittels 3 Präsentationen am Anfang, in der Mitte und am Ende des Projekts. Um den erfolgreichen Ablauf zu sichern, wurden in der Anfangsphase Meilensteine definiert und ein Arbeitsplan erarbeitet, der sich jedoch während der Projektentwicklung erheblich geändert hat. 
 
-Wir haben das Projekt in vier Teilprobleme gegliedert. Diese sind:
-\begin{itemize}
-\item Einrichtung der Arbeitsumgebung und Einarbeitung in die Projekte RIOT OS und OpenCV.
-\item Test auf Machbarkeit der Portierung von OpenCV (Feststellung des Umfangs, in dem Programme in C++ von RIOT OS unterstützt sind).
-\item Entwicklung einer auf RIOT OS lauffähigen Musteranwendung für Bildverarbeitung
-\item Erstellung einer erweiternden Dokumentation für die Benutzung von OpenCV bzw. C++ unter RIOT
-\end{itemize}
-
-Dabei haben wir uns an folgende Meilensteine orientiert: \newline
-1) Ein c++ Programm ist lauffähig unter RIOT; \newline
-2) Einlesen und Schreiben der (Bild)Dateien ist unter RIOT möglich; \newline
-3) Unterstützung der benutzten Datentypen ist sichergestellt; \newline
-4) Anwendung zur Hintergrundentfernung ist erstellt. \newline
+Wir haben das Projekt in vier Teilprobleme gegliedert:
+\begin{enumerate}
+\item Einrichtung der Arbeitsumgebung. Einarbeitung in RIOT und OpenCV.
+\item Test auf Machbarkeit der Portierung von OpenCV.
+\item Entwicklung einer Beispielanwendung für RIOT OS.
+\item Erstellung der Dokumentation.
+\end{enumerate}
 
 Für die Zusammenarbeit am Projekt und die Versionsverwaltung haben wir das Plattform Github benutzt. Außerdem fanden wöchentliche Treffen der Teammitglieder statt. \\
 
@@ -95,9 +88,9 @@ Für die Zusammenarbeit am Projekt und die Versionsverwaltung haben wir das Plat
 
 Wir haben den Schwerpunkt unseres Projektes darauf gelegt, die potentiellen Möglichkeiten für das Zusammenspiel von OpenCV und RIOT OS zu untersuchen. Wir sind davon ausgegangen, dass die Portierung erfolgreich sein würde, da zumindest theoretische Voraussetzungen dafür gegeben waren: Einerseits, ist OpenCV eine modulare Graphik-Bibliothek mit Fokus auf C++; andererseits, unterstützt RIOT OS die Entwicklung sowohl in C, als auch in C++. Wir haben uns zum Ziel gesetzt, diese theoretische Annahme in der Praxis zu überprüfen. \newline
 
-Während der Einarbeitungszeit hatten wir viele Schwierigkeiten aufgrund mangelhafter Dokumentation und öfteren Veränderungen am RIOT. Viel Zeit hat der Versuch gekostet, ein einfaches C++-Programm unter RIOT zum Laufen zu bringen bzw. den Grund für Probleme damit herauszufinden. Letztendlich hat sich herausgestellt, dass die Unterstützung vieler grundlegender C++-Bibliotheken fehlt (wie <fstream>, <iostream> usw.), die z.B. mit Systemzugriff arbeiten, was für Portierbarkeit von OpenCV entscheidend wäre. \newline
+Während der Einarbeitungszeit hatten wir viele Schwierigkeiten aufgrund mangelhafter Dokumentation und öfteren Veränderungen am RIOT. Viel Zeit hat der Versuch gekostet, ein einfaches C++-Programm unter RIOT zum Laufen zu bringen bzw. den Grund für Probleme damit herauszufinden. Letztendlich hat sich herausgestellt, dass die Unterstützung vieler grundlegender C++-Bibliotheken fehlt (wie {\it fstream}, {\it iostream} usw.), die z.B. mit Systemzugriff arbeiten, was für Portierbarkeit von OpenCV entscheidend wäre. \newline
 
-Dadurch haben sich technische Anforderungen geändert und es wurde entschieden, mindestens zu versuchen, einen Beispielalgorithmus von OpenCV (BackgroundSubtractorMOG) in einer Musteranwendung einzusetzen. Als Nebenleistung sollte eine Hilfsdokumentation zur Benutzung von C++-Programmen unter RIOT erstellt werden.
+Diese Tatsache hat zur erheblichen Änderung unserer Aufgabenstellung geführt.
 
 \subsection{Herausforderungen}
 
@@ -112,7 +105,7 @@ Wie es schon oben erwähnt wurde, haben wir eine Reihe der Faktoren, die eine er
 \item Ein gewisses Problem stellten auch verschiedene Toolchain- und Bibliotheksversionen für die Zielplattformen dar.
 \end{itemize}
 
-Wür möchten unsere Behauptung, dass für eine erfolgreiche Portierung von OpenCV auf RIOT OS eine komplettere Unterstützung von C++ nötig wäre, mit einigen von uns gefundenen Abhängigkeiten untermauern. \newline
+Für eine erfolgreiche Portierung von OpenCV auf RIOT OS wäre eine komplettere Unterstützung von C++ nötig. Diese Behauptung wird durch die folgenden Ueberlegungen erlaeutert. \newline
 
 \begin{center}
   \begin{tabular}{ | p{10cm} | }
@@ -129,107 +122,42 @@ thread; tuple; unordered\_map; unordered\_set; valarray \\
   \end{tabular}
 \end{center}
 
-Beispiele für Abhängigkeiten zwischen OpenCV-Modulen und obengenannten Bibliotheken: \\
-
-{\bf algorithm; array; atomic; bitset:} \newline
-opencv-2.4.5/modules/features2d/src/freak.cpp \newline
-
-{\bf condition\_variable; complex:} \newline
-opencv-2.4.5/modules/core/include/opencv2/core/core.hpp \newline
-opencv-2.4.5/3rdparty/openexr/Imath/ImathRoots.h \newline
-
-{\bf forward\_list; fstream:} \newline
-opencv-2.4.5/modules/nonfree/test/test\_detectors.cpp \newline
-opencv-2.4.5/modules/ocl/src/initialization.cpp \newline
-opencv-2.4.5/modules/ocl/test/precomp.hpp \newline
-opencv-2.4.5/modules/gpu/test/test\_precomp.hpp \newline
-opencv-2.4.5/modules/gpu/test/nvidia/NCVTest.hpp \newline
-opencv-2.4.5/modules/core/test/test\_operations.cpp \newline
-opencv-2.4.5/modules/contrib/src/spinimages.cpp \newline
-opencv-2.4.5/modules/contrib/doc/facerec/src/facerec\_video.cpp \newline
-opencv-2.4.5/modules/contrib/doc/facerec/src/facerec\_fisherfaces.cpp \newline
-opencv-2.4.5/modules/contrib/doc/facerec/src/facerec\_save\_load.cpp \newline
-opencv-2.4.5/modules/contrib/doc/facerec/src/facerec\_eigenfaces.cpp \newline
-opencv-2.4.5/modules/contrib/doc/facerec/src/facerec\_demo.cpp \newline
-opencv-2.4.5/modules/contrib/doc/facerec/src/facerec\_lbph.cpp \newline
-opencv-2.4.5/modules/calib3d/src/circlesgrid.hpp \newline
-opencv-2.4.5/modules/calib3d/test/test\_affine3d\_estimator.cpp \newline
-opencv-2.4.5/modules/ml/test/test\_gbttest.cpp \newline
-opencv-2.4.5/modules/ml/test/test\_save\_load.cpp \newline
-opencv-2.4.5/modules/legacy/src/calonder.cpp \newline
-opencv-2.4.5/modules/legacy/test/test\_optflow.cpp \newline
-opencv-2.4.5/modules/video/test/test\_tvl1optflow.cpp \newline
-opencv-2.4.5/modules/video/test/test\_estimaterigid.cpp \newline
-opencv-2.4.5/modules/features2d/src/freak.cpp \newline
-opencv-2.4.5/modules/features2d/src/brisk.cpp \newline
-opencv-2.4.5/samples/ocl/hog.cpp \newline
-opencv-2.4.5/samples/gpu/optical\_flow.cpp \newline
-opencv-2.4.5/samples/gpu/hog.cpp \newline
-opencv-2.4.5/samples/c/find\_obj\_calonder.cpp \newline
-opencv-2.4.5/samples/cpp/pca.cpp \newline
-opencv-2.4.5/samples/cpp/matching\_to\_many\_images.cpp \newline
-opencv-2.4.5/samples/cpp/videostab.cpp \newline
-opencv-2.4.5/samples/cpp/convexhull.cpp \newline
-opencv-2.4.5/samples/cpp/bagofwords\_classification.cpp \newline
-opencv-2.4.5/samples/cpp/detector\_descriptor\_evaluation.cpp \newline
-opencv-2.4.5/samples/cpp/facerec\_demo.cpp \newline
-opencv-2.4.5/samples/cpp/stitching.cpp \newline
-opencv-2.4.5/samples/cpp/detector\_descriptor\_matcher\_evaluation.cpp \newline
-opencv-2.4.5/samples/cpp/tvl1\_optical\_flow.cpp \newline
-opencv-2.4.5/samples/cpp/stitching\_detailed.cpp \newline
-opencv-2.4.5/apps/traincascade/imagestorage.cpp \newline
-opencv-2.4.5/3rdparty/openexr/IlmImf/ImfTiledOutputFile.cpp \newline
-opencv-2.4.5/3rdparty/openexr/IlmImf/ImfStdIO.h \newline
-opencv-2.4.5/3rdparty/openexr/IlmImf/ImfOutputFile.cpp \newline
-opencv-2.4.5/3rdparty/openexr/IlmImf/ImfInputFile.cpp \newline
-opencv-2.4.5/3rdparty/openexr/IlmImf/ImfInputFile.h \newline
-opencv-2.4.5/android/service/engine/jni/BinderComponent/ProcReader.cpp \newline
-
-{\bf functional:} \newline
-opencv-2.4.5/modules/ocl/src/brute\_force\_matcher.cpp \newline
-opencv-2.4.5/modules/imgproc/src/generalized\_hough.cpp \newline
-opencv-2.4.5/modules/gpu/include/opencv2/gpu/device/functional.hpp \newline
-opencv-2.4.5/modules/gpu/src/precomp.hpp \newline
-opencv-2.4.5/modules/gpu/test/test\_precomp.hpp \newline
-opencv-2.4.5/modules/stitching/src/precomp.hpp \newline
-opencv-2.4.5/modules/contrib/src/spinimages.cpp \newline
-opencv-2.4.5/modules/calib3d/test/test\_affine3d\_estimator.cpp \newline
-opencv-2.4.5/modules/calib3d/test/test\_chesscorners.cpp \newline
-opencv-2.4.5/modules/highgui/src/window\_w32.cpp \newline
-opencv-2.4.5/samples/cpp/bagofwords\_classification.cpp \\
-
-Auch dieser kleine Teil an Abhängigkeiten macht deutlich, dass eine komplettere Unterstützung von C++ ein wichtiges Kriterium für die Portierung wäre, bzw. dass unter den gegebenen Bedingungen OpenCV sich nicht auf RIOT OS portieren lässt. Portieren lassen sich einzelne Algorithmen (die keine Systemaufrufe nutzen). \newline
+Es gibt zahlreiche Beispiele für Abhängigkeiten zwischen den OpenCV-Modulen und den obengenannten Bibliotheken. Das verdeutlicht die Tatsache, dass eine komplettere Unterstützung von C++ ein wichtiges Kriterium für die Portierung wäre, bzw. dass unter den gegebenen Bedingungen OpenCV sich nicht auf RIOT OS portieren lässt. \newline
 
 Nach dieser Feststellung mussten wir uns zwischen 2 Wegen für die Weiterarbeit an dem Projekt entscheiden: \newline
 1) Entweder wird das Betriebssystem RIOT OS dazu gebracht, das erforderliche Maß an C++-Unterstützung zu erreichen; \newline
-2) Oder wir versuchen, einzelne Algorithmen zu portieren bzw. sie anzupassen. Eine solche Anpassung wäre z.B. durch das Lösen der Probleme mit Systemaufrufen möglich, indem die benutzten C++-Aufrufe durch die entsprechenden Funktionalitäten in C ersetzt werden.\newline
+2) Oder wir versuchen, einzelne Module oder Algorithmen zu portieren bzw. sie anzupassen. Eine solche Anpassung wäre z.B. durch das Lösen der Probleme mit Systemaufrufen möglich, indem die benutzten C++-Aufrufe durch die entsprechenden Funktionalitäten in C ersetzt werden.\newline
 
 Wir haben uns aufgrund des zeitlichen Projektrahmens für die zweite Alternative entschieden. \\
 
-a) Portierungsprobleme seitens OpenCV \newline
+b) Portierungsprobleme seitens OpenCV \newline
 
-Als einen weiteren einschränkenden Faktor haben wir eine große Anzahl an OpenCV-eigenen Datentypen festgestellt, die bei dem Importieren von OpenCV-Modulen durchaus erwünscht sind, weil sie intern für Effizienz und Abgestimmtheit sorgen; bei dem Herausnehmen und Anpassen einzelner Algorithmen aber ein gewisses Problem darstellen, da ihre Äquivalente und Abhängigkeiten untereinander explizit programmiert werden müssen.
+Als einen weiteren einschränkenden Faktor haben wir eine große Anzahl an OpenCV-eigenen Datentypen festgestellt, die im Modul {\it base} definiert und beim Importieren von OpenCV-Modulen durchaus erwünscht sind, weil sie intern für Effizienz und Abgestimmtheit sorgen; bei dem Extrahieren und Anpassen einzelner Algorithmen aber ein gewisses Problem darstellen, da ihre Äquivalente und Abhängigkeiten untereinander explizit programmiert werden müssen.
 
 \subsection{Folgeentscheidungen}
 
-Als Ergebnis der obenbeschriebenen Untersuchungen haben sich die technischen Anforderungen unseres Projektes geändert und der vorgenommene Portierungsumfang war darauf reduziert, mindestens eine Funktionalität von OpenCV auf RIOT OS in einer Musteranwendung bereitzustellen. Dafür wurde die Funktionalität zur Hintergrundentfernung BackgroundSubtractorMOG aus dem video-Modul von OpenCV gewählt. Außerdem sollte eine Hilfsdokumentation für die RIOT-Wiki erstellt werden.
+Wir haben festgestellt, dass man für die Portierung von einzelnen Modulen das ganze Modul {\it base} portieren müsste. Das wäre aber nicht möglich, weil die Ein- und Ausgabe in C++ von RIOT nicht unterstützt wird. In dem Modul {\it base} sind alle Grunddatentypen von OpenCV enthalten. Das würde die Portierung weiterer Module ohne das Modul {\it base} erschweren. \\
+
+Hätte man sich für die Portierung der Funktionalität zur Hintergrundentfernung aus dem Modul {\it video} entschieden, bräuchte man das ganze Modul {\it video}, das Frames aus Streams filtern kann und noch vieles mehr. Das wäre aber aus den gleichen Gründen nicht nutzbar. \\
+
+Als Ergebnis der obenbeschriebenen Untersuchungen haben sich die technischen Anforderungen unseres Projektes geändert, und der vorgenommene Portierungsumfang war auf das Extrahieren und Anpassen des Algorithmus BackgroundSubtractorMOG reduziert. Außerdem sollte eine Hilfsdokumentation für die RIOT-Wiki erstellt werden.
 
 \newpage
-\section{Musteranwendung für RIOT OS}
+\section{Beispielanwendung für RIOT OS}
 
 \subsection{Hintergrundentfernung: Motivation}
 
-Im Prozess des maschinellen Sehens ist Bildsegmentierung üblicherweise der erste Schritt der Bildanalyse. Unter Segmentierung versteht man die Erzeugung von ihnaltlich zusammengehörenden Regionen durch Zusammenfassung benachbarter Pixel entsprechend einem Homogenitätskritärium. Ein typischer Anwendungsfall dafür ist Szenenanalyse in der Videoüberwachung, wobei Segmentierung in Echtzeit erfolgt. Eine der grundlegenden Methoden ist dabei Subtraktion des Hintergrunds. Es wurden viele Hintergrundmodelle entwickelt, die zur Lösung verschiedener Problemstellungen dienen. Ihnen ist gemeinsam, dass dabei angenommen wird, dass die Szenen bzw. Bildregionen ohne eindringende Objekte ein bestimmtes regelmäßiges Verhalten aufweisen, das mit einem statistischen Modell beschrieben werden kann. Eindringende Objekte können dementsprechend durch die Erkundung der in dieses statistische Modell nicht reinpassenden Bildteile bestimmt werden. \\
+Im Prozess des maschinellen Sehens ist Bildsegmentierung üblicherweise der erste Schritt der Bildanalyse. Unter Segmentierung versteht man die Erzeugung von ihnaltlich zusammengehörenden Regionen durch Zusammenfassung benachbarter Pixel entsprechend einem Homogenitätskritärium [6]. Ein typischer Anwendungsfall dafür ist Szenenanalyse in der Videoüberwachung, wobei Segmentierung in Echtzeit erfolgt. Eine der grundlegenden Methoden ist dabei Subtraktion des Hintergrunds. Es wurden viele Hintergrundmodelle entwickelt, die zur Lösung verschiedener Problemstellungen dienen. Ihnen ist gemeinsam, dass dabei angenommen wird, dass die Szenen bzw. Bildregionen ohne eindringende Objekte ein bestimmtes regelmäßiges Verhalten aufweisen, das mit einem statistischen Modell beschrieben werden kann [6]. Eindringende Objekte können dementsprechend durch die Erkundung der in dieses statistische Modell nicht reinpassenden Bildteile bestimmt werden. \\
 
 Da in dem für uns relevanten Projekt SAFEST Hintergrundentfernung einen großen Vorteil der Reduzierung des Speicherverbrauchs bei der Verarbeitung der Daten der Videoüberwachung bringen könnte; und aufgrund der mangelhaften Unterstützung vieler C++-Bibliotheken unter RIOT, was die komplette Portierung erheblich erschwerte, - haben wir für das Herausnehmen und Anpassen des OpenCV-Algorithmus zur Entfernung des Hintergrunds entschieden. Dafür war das Kennenlernen dieses Algorithmus erforderlich. 
 
 \subsection{Algorithmus zur Hintergrundentfernung}
 
-Das von uns gewählte Algorithmus BackgroundSubtractorMOG von OpenCV basiert auf dem theoretischen Modell, das in der Arbeit {\it An Improved Adaptive Background Mixture Model for Real-Time Tracking with Shadow Detection} [KaewTraKulPong, Bowden 2001] vorgestellt ist. \\
+Das von uns gewählte Algorithmus BackgroundSubtractorMOG von OpenCV basiert auf dem theoretischen Modell, das in der Arbeit {\it An Improved Adaptive Background Mixture Model for Real-Time Tracking with Shadow Detection} von KaewTraKulPong und Bowden in [5] vorgestellt ist. \\
 
 Dieses Modell nutzt den pixel-basierten Ansatz zur Hintergrundentfernung: für jedes einzelne Pixel wird eine Wahrscheinlichkeitsdichtefunktion erstellt, die zur Entscheidung herangezogen wird, ob der gegebene Pixel zum Hinter- oder zum Vordergrund gehört. \\
 
-Die Implementierung von OpenCV unterscheidet sich von diesem theoretischen Modell dadurch, dass BackgroundSubtractorMOG keine Schattenerkennung macht. 
+Die Implementierung von OpenCV unterscheidet sich von diesem theoretischen Modell dadurch, dass BackgroundSubtractorMOG keine Schattenerkennung macht [2]. 
 
 \subsection{Unsere Implementierung}
 
@@ -239,7 +167,7 @@ Unser Quellcode umfasst 5 Dateien: {\it image.h, image.cpp, bgfg\_gaussmix.h,
 
 a) Implementierung nötiger Operationen mit Dateien und Bildern \\
 
-In der Datei image.cpp werden die grundlegenden Funktionalitäten zum Lesen und Schreiben von .jpeg-Dateien; zum Erstellen, Belegen und Befreien der Bildmatrizen; zum Konvertieren zwischen Bildern und Bildmatrizen; sowie zum Erfassen von Bilddimensionen implementiert. Image.h liefert Schnittstelle dafür.
+In der Datei image.cpp werden die grundlegenden Funktionalitäten zum Lesen und Schreiben von .jpeg-Dateien; zum Erstellen, Belegen und Befreien der Bildmatrizen; zum Konvertieren zwischen Bildern und Bildmatrizen; sowie zum Erfassen von Bilddimensionen implementiert. Image.h liefert Schnittstelle dafür. \\
 
 b) Implementierung der Funktionalität zur Hintergrundentfernung \\
 
@@ -256,13 +184,13 @@ Im Laufe der Projektentwicklung haben wir folgende Ergebnisse bekommen:
 
 \begin{itemize}
 \item C++ wird unter RIOT (Stand: Mai 2013) nicht komplett unterstützt. Die aufgedeckten Probleme haben wir in einem Beitrag zur RIOT-Wiki beschrieben. 
-\item Dadurch sind aktuell die Möglichkeiten für Zusammenarbeit von OpenCV und RIOT OS als ziemlich begrenzt zu bezeichnen. 
-\item Ein entscheidender Kriterium für die Portierbarkeit wäre eine vollständigere Unterstützung von C++ seitens RIOT (insbesondere von Systemzugriffsbibliotheken), was durchaus möglich scheint, da RIOT OS ständig weiterentwickelt und aktualisiert wird.
+\item Dadurch sind aktuell die Möglichkeiten für Zusammenarbeit von OpenCV und RIOT OS als ziemlich begrenzt zu bezeichnen. Die Annahme, dass die Modularität von OpenCV  zur erfolgreichen Portierung führen wird, hat sich nicht bestätigt. 
+\item Ein entscheidender Schritt in Richtung der Portierbarkeit wäre eine vollständigere Unterstützung von C++ seitens RIOT (insbesondere von Systemzugriffsbibliotheken), was durchaus möglich scheint, da RIOT OS ständig weiterentwickelt und aktualisiert wird.
 \item Mittlerweile ist Extraktion einzelner OpenCV-Algorithmen möglich, was allerdings ein ziemlich aufwendiger Prozess ist.
 \item Wir haben eine Beispielanwendung entwickelt, das Hintergrundentfernung auf schwarz-weißen *.jpg Bildern unter RIOT OS erlaubt.
 \end{itemize}
 
-Für das weitere Vorgehen sehen wir folgende Alternativen: \\
+Für das weitere Vorgehen sehen wir folgende Alternativen: 
 
 \begin{itemize}
 \item Für kleinere (Test)Anwendungen könnte die von uns bereitgestellte Funktionalität zur Hintergrundentfernung benutzt werden. Nach Bedarf könnte sie um Unterstützung farbiger Bilder, anderer Bildformate oder Videosequenzen erweitert werden. Außerdem könnte sie als ein Muster für Extraktion weiterer Funktionalitäten von OpenCV benutzt werden.
@@ -274,43 +202,80 @@ Im Allgemeinen hat für die Erfahrung der Arbeit an einem Softwareprojekt als po
 \newpage
 \section{Anhang}
 
-\subsection{Quellcode}
+\subsection{Quellcode \& Doku}
 
-// Todo: Hier Quellcode reinschreiben oder einfach nur als zip-Datei abgeben????
+\begin {itemize}
+
+\item Unser Quellcode und die Projektdokumentation online : 
+
+SWP 2013: Portierung von OpenCV auf RIOT OS \newline (\textless\href{https://github.com/swp2013riot/riot-opencv-port}{https://github.com/swp2013riot/riot-opencv-port}\textgreater) 
+
+\item Unser Beitrag zu RIOT-wiki : 
+
+Using C++ on RIOT OS \newline 
+(\textless\href{https://github.com/RIOT-OS/RIOT/wiki}{https://github.com/RIOT-OS/RIOT/wiki}\textgreater)
+
+\end {itemize}
 
 \subsection{Glossar}
 
-// Todo: Maybe define some specific termini ???
+Die folgenden Definitionen stammen, falls nicht explizit angegeben, aus den entsprechenden Wikipedia-Artikeln.
 
-gaussian mixtures \\
-background subtraction \\
-background \\
-foreground \\
+\begin {description}
 
+\item {\it OpenCV} - Open Source Computer Vision Library
+
+\item {\it RIOT} - One OS to Rule Them All in the IoT
+
+\item {\it SAFEST} - Social-Aria Framework for Security Triggers at Airports
+
+\item {\it Internet der Dinge (IoT, Internet of Things)} - die Verknüpfung eindeutig identifizierbarer physischer Objekte (things) mit einer virtuellen Repräsentation in einer Internet-ähnlichen Struktur.
+
+\item {\it Gantt-Diagramm (Gantt chart)} - Instrument des Projektmanagements, das die zeitliche Abfolge von Aktivitäten grafisch in Form von Balken auf einer Zeitachse darstellt. 
+
+\item {\it Maschinelles Sehen (Bildverstehen, Computer Vision)} - beschreibt im Allgemeinen die computergestützte Lösung von Aufgabenstellungen, die sich an den Fähigkeiten des menschlichen visuellen Systems orientieren
+
+\item {\it Wahrscheinlichkeitsverteilung (probability distribution)} - gibt an, wie sich die Wahrscheinlichkeiten auf die möglichen Zufallsergebnisse, insbesondere die möglichen Werte einer Zufallsvariablen, verteilen. Erfasst bzw. quantifiziert den Zufall in einem stochastischen Vorgang.
+
+\item {\it Stetige Wahrscheinlichkeitsverteilung (continuous probability distribution)} - erstreckt sich auf größere Bereiche. Einzelne Punkte können dabei die Wahrscheinlichkeit 0 haben. 
+
+\item {\it Normalverteilung (Gauß-Verteilung, normal distribution, Gaussian distribution)} - ein prototypischer Vertreter von stetigen Verteilungen. Ihre Wahrscheinlichkeitsdichte bzw. deren Graph wird auch Gauß-Funktion, Gauß-Kurve, Gauß-Glocke oder Glockenkurve genannt. Mittels Normalverteilung lassen sich viele reale Situationen näherungsweise beschreiben.
+
+\item {\it Wahrscheinlichkteisdichtefunktion (probability density function, p.d.f.)} - ein Hilfsmittel zur Beschreibung einer stetigen Wahrscheinlichkeitsverteilung. Mit Hilfe dieser Funktion lässt sich die Wahrscheinlichkeit für ein beliebiges Intervall bestimmen. 
+
+\item {\it Erwartungswert (expected value)} - beschreibt die Zahl, die die Zufallsvariable im Mittel annimmt. 
+
+\item {\it Varianz (variance)} - Maß für die Abweichung einer Zufallsvariablen von ihrem Erwartungswert. 
+
+\item {\it Mischverteilung (mixture distribution, mixture model)} - Wahrscheinlichkeitsverteilung einer Zufallsvariablen, die sich aus der Mischung von anderen Wahrscheinlichkeitsverteilungen ergibt.
+
+\item {\it Gaußsche Mischverteilung (gaussian mixture model, GMM)} - Approximiert Verteilung durch gewichtete Summe von Normalverteilungen.
+
+\item {\it Hintergrundmodell (background mixture model)} - basiert auf Annahme, dass Hintergrundfarbwert eines Pixels in einer Bildfolge normal verteilt ist (kann also als eine Gaußverteilung mit Dichtefunktion p(x) modelliert werden). Damit reduziert sich das Problem der Schätzung der aktuellen Hintergrundfarbverteilung auf das Schätzen des Erwartungsvektors (geschätzter Hintergrundfarbwert) und der Kovarianzmatrix (geschätzte Schwankung des Farbwertes), die eine Gaußverteilung eindeutig charakterisieren. Die Pixel, die keinen der (mittels einer einfachen Heuristik bestimmten) höchstwahrscheinlichen Hintergrundfarbwerte annehmen, werden als Vordergrundpixel bezeichnet. Die Vordergrundpixel werden dann zu 2D Objekten zusammengesfasst. Um den Algorithmus zu initialisieren, muss zuerst ein Hintergrundbild aufgenommen werden. (Beschreibung aus [7]).
+
+\item {\it adaptives Hintergrundmodell (adaptive background mixture model)} - ein Verfahren, wobei anfangs eine \"leere\" Szene als Hintergrundbild aufgenommen wird und dieses dann immer wieder adaptiert wird. Die ständige Anpassung des Hintergrundbildes ist nötig, um Änderungen der Lichtverhältnisse oder des Hintergrunds selbst zu berücksichtigen. (Beschreibung aus [7]).
+
+\end {description}
 
 \newpage
-\section{Quellen}
+\section{Quellen} 
 
-\subsection*{Homepages der betreffenden Projekte und Ressourcen}
-\begin{itemize}
-\item Projekt SAFEST (\textless\href{http://safest.realmv6.org/}{http://safest.realmv6.org/}\textgreater)
-\item OpenCV (\textless\href{http://opencv.org}{http://opencv.org}\textgreater)
-\item OS RIOT (\textless\href{http://www.riot-os.org}{http://www.riot-os.org}\textgreater)
-\end{itemize}
+\vspace*{1.5cm}
 
-\subsection*{Veröffentlichungen zu den betreffenden Projekten} 
-\begin{itemize}
+\begin{enumerate} 
 
-\item KaewTraKulPong P., Bowden R., An Improved Adaptive Background Mixture Model for Real-time Tracking with Shadow Detection. In Proc. 2nd European Workshop on Advanced Video Based Surveillance Systems, AVBS01, Sept 2001. \newline (\textless\href{http://personal.ee.surrey.ac.uk/Personal/R.Bowden/publications/avbs01/avbs01.pdf}{http://personal.ee.surrey.ac.uk/Personal/R.Bowden/publications/avbs01/avbs01.pdf}\textgreater)
+\item Projekt SAFEST Homepage (\textless\href{http://safest.realmv6.org/}{http://safest.realmv6.org/}\textgreater)
+\item OpenCV Homepage (\textless\href{http://opencv.org}{http://opencv.org}\textgreater)
+\item OS RIOT Homepage (\textless\href{http://www.riot-os.org}{http://www.riot-os.org}\textgreater)
 
 \item Baccelli E., Hahm O., Wählisch M., Günes M., Schmidt T., RIOT: One OS to Rule Them All in the IoT. INRIA, Research Report, No. RR-8176, Dec. 2012. \newline (\textless\href{http://hal.inria.fr/hal-00768685/}{http://hal.inria.fr/hal-00768685/}\textgreater)
 
-\end{itemize}
+\item KaewTraKulPong P., Bowden R., An Improved Adaptive Background Mixture Model for Real-time Tracking with Shadow Detection. In Proc. 2nd European Workshop on Advanced Video Based Surveillance Systems, AVBS01, Sept 2001. \newline (\textless\href{http://personal.ee.surrey.ac.uk/Personal/R.Bowden/publications/avbs01/avbs01.pdf}{http://personal.ee.surrey.ac.uk/Personal/R.Bowden/publications/avbs01/avbs01.pdf}\textgreater)
 
-\subsection*{Unser Quellcode und Dokumentierung}
-\begin{itemize}
-\item SWP 2013: Portierung von OpenCV auf RIOT OS \newline (\textless\href{https://github.com/swp2013riot/riot-opencv-port}{https://github.com/swp2013riot/riot-opencv-port}\textgreater)
+\item Segmentierung (Bildverarbeitung). Wikipedia. \newline (\textless\href{http://de.wikipedia.org/wiki/Segmentierung\_(Bildverarbeitung)}{http://de.wikipedia.org/wiki/Segmentierung\_(Bildverarbeitung)}\textgreater)
 
-\end{itemize}
+\item Focken D. Adaptive Hintergrundmodelle zur Personenverfolgung. Studienarbeit. Universität Karlsruhe, Fakultät für Informatik, Institut für Komplexität und Logik, Jul. 2000. \newline (\textless\href{https://cvhci.anthropomatik.kit.edu/~stiefel/studienarbeiten/dirk\_sa.pdf}{https://cvhci.anthropomatik.kit.edu/~stiefel/studienarbeiten/dirk\_sa.pdf}\textgreater)
+
+\end{enumerate}
 
 \end{document}
