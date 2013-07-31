@@ -4,6 +4,7 @@
 \usepackage[german]{babel}
 \usepackage[pdfborder={0 0 0}]{hyperref}
 \usepackage{tabularx}
+\usepackage{graphicx}
 
 \setlength{\parindent}{0cm}
 
@@ -55,12 +56,12 @@ Da im Projekt SAFEST der erste Bildverarbeitungsschritt auf die Vorverarbeitung 
 \begin{itemize}
 \item Das Programm bekommt eine Reihe von Bildern als Eingabe.
 \item Diese Bildern werden an die Funktion zur Hintergrundentfernung übergeben. 
-\item Die Funktion wendet das MOG-Modell auf die Bilder an und speichert das letzte Ergebnis in einer Bilddatei.
+\item Die Funktion wendet das Mixture-of-Gaussians (MOG) Modell auf die Bilder an und speichert das letzte Ergebnis in einer Bilddatei.
 \end{itemize}
 
 Dieser Anwendungsfall setzt die Portierung der Funktionalität zur Hintergrundentfernung aus dem für das Projekt SAFEST relevanten OpenCV-Modul {\it video} voraus.
 
-\subsection{Stand der Technik}
+\subsection{Aktueller Wissensstand}
 
 In unserem Projekt haben wir mit OpenCV (Version 2.4.5) und RIOT OS (Stand April-Mai 2013) gearbeitet.  \\
 
@@ -88,6 +89,8 @@ Für die Zusammenarbeit am Projekt und die Versionsverwaltung haben wir das Plat
 
 Wir haben den Schwerpunkt unseres Projektes darauf gelegt, die potentiellen Möglichkeiten für das Zusammenspiel von OpenCV und RIOT OS zu untersuchen. Wir sind davon ausgegangen, dass die Portierung erfolgreich sein würde, da zumindest theoretische Voraussetzungen dafür gegeben waren: Einerseits, ist OpenCV eine modulare Graphik-Bibliothek mit Fokus auf C++; andererseits, unterstützt RIOT OS die Entwicklung sowohl in C, als auch in C++. Wir haben uns zum Ziel gesetzt, diese theoretische Annahme in der Praxis zu überprüfen. \newline
 
+RIOT läuft auf verschiedenen Hardwareplattformen. Zur Verfügung wurde uns das MSB-A2 gestellt, ein Mikrocontroller gesteuerter Sensorknoten mit verschiedenen Sensoren (zur Messung von Temperatur, Licht und Vibrationen) und einem Funkmodul für eine Drahtlose Kommunikation. Weiter steht eine ''Native-Port'' genannte Plattform zur Verfügung. Für letztere haben wir uns entschieden. Diese läuft nativ auf einem Linux System und unterliegt weniger Restriktionen als das Eingebette System MSB-A2, welches durch seinen geringen Speicher von 512kB nur bedingt für Bildverarbeitung geiegnet ist. \newline
+
 Während der Einarbeitungszeit hatten wir viele Schwierigkeiten aufgrund mangelhafter Dokumentation und öfteren Veränderungen am RIOT. Viel Zeit hat der Versuch gekostet, ein einfaches C++-Programm unter RIOT zum Laufen zu bringen bzw. den Grund für Probleme damit herauszufinden. Letztendlich hat sich herausgestellt, dass die Unterstützung vieler grundlegender C++-Bibliotheken fehlt (wie {\it fstream}, {\it iostream} usw.), die z.B. mit Systemzugriff arbeiten, was für Portierbarkeit von OpenCV entscheidend wäre. \newline
 
 Diese Tatsache hat zur erheblichen Änderung unserer Aufgabenstellung geführt.
@@ -101,11 +104,11 @@ Wie es schon oben erwähnt wurde, haben wir eine Reihe der Faktoren, die eine er
 \begin{itemize}
 \item Als IST-Zustand zu Projektbeginn war die C++-Unterstützung seitens RIOT OS mangelhaft.
 \item Im Laufe der Entwicklungen zeitgleich zum Projekt wurde Verbesserung der Unterstützung von Nativem Port, viele Fehlerbehebungen usw. beobachtet. Außerdem wurde die Unterstützung von C++ seitens RIOT verbessert (der RIOT-Compiler hat angefangen, nicht nur nach einem main.c, sondern auch nach einem main.cpp Programm zu suchen). 
-\item Unterstützung von der Standardbibliothek von C++ blieb aber unkomplett (z.B. wird Input/Output Library nicht eingebunden).
+\item Unterstützung von der Standardbibliothek von C++ blieb aber unvollständig (z.B. wird Input/Output Library nicht eingebunden).
 \item Ein gewisses Problem stellten auch verschiedene Toolchain- und Bibliotheksversionen für die Zielplattformen dar.
 \end{itemize}
 
-Für eine erfolgreiche Portierung von OpenCV auf RIOT OS wäre eine komplettere Unterstützung von C++ nötig. Diese Behauptung wird durch die folgenden Ueberlegungen erlaeutert. \newline
+Für eine erfolgreiche Portierung von OpenCV auf RIOT OS wäre eine komplettere Unterstützung von C++ nötig. Diese Behauptung wird durch die folgenden Ueberlegungen erlaeutert.
 
 \begin{center}
   \begin{tabular}{ | p{10cm} | }
@@ -175,7 +178,21 @@ Hier wird vor allem die Funktion {\it process8uC1()} aus dem BackgroundSubtracto
 
 c) Testfall \\
 
-Die Datei main.cpp mit dem entsprechenden Makefile wurden zum Testen des Ablaufs der Hintergrundentfernung auf dem Plattform RIOT entwickelt. Entsprechend dem am Anfang postulierten Anwendungsfall werden beim Testen nach dem Dateieinlesen 6 Bildmatritzen erzeugt, die einen grauen Viereck mit einem schwarzen Streifen darstellen. Der Streifen befindet sich auf jedem Bild an einer anderen Stelle und soll als dynamischer Vordergrund interpretiert werden. Die graue Fläche stellt Hintergrund dar. Diese Bildmatritzen und sonstige nötigen Parameter wie Hintergrundmodell, Lernrate, Bilddimensionen, Varianz-Schwellenwert u.a. werden von der Funktion {\it process8uC1()} abgearbeiten und das Ergebnis der Hintergrundentfernung auf dem letzten Bild wird in der Datei {\it fg\_image.jpg} gespeichert. Das Ergebnisbild ist schwarz und hat einen weißen Streifen an der Position des schwarzen Streifens aus dem letzten interpretierten Bild. Das zeugt davon, dass unser Programm die Hintergrundentfernung richtig gemacht hat: der Schwarzbereich gehört zum Hintergrund, das Objekt - der Streifen - gehört zum Vordergrund und wird weiß markiert.
+Die Datei main.cpp mit dem entsprechenden Makefile wurden zum Testen des Ablaufs der Hintergrundentfernung auf RIOT entwickelt. Mit Rücksicht auf den am Anfang postulierten Anwendungsfall wird der Test wie folgt ausgeführt:
+
+\begin{enumerate}
+\item Es werden nach dem jpg-Dateieinlesen 6 Bildmatrizen mit je einem Streifen zum Testen erzeugt. Der Streifen befindet sich auf jedem Bild an einer anderen Stelle und soll als dynamischer Vordergrund interpretiert werden. 
+\item Die erste Bildmatrix wird zusammen mit den sonstigen nötigen Parametern wie Hintergrundmodell, Lernrate, Bilddimensionen, Varianz-Schwellenwert u.a. an die Funktion {\it process8uC1()} übergeben.
+\item Die Funktion führt Hintergrundentfernung auf der Bildmatrix aus und aktualisiert das Hintergrundmodell.
+\item Schritte 2 und 3 werden auch für die restlichen 5 Bildmatrizen nacheinander ausgeführt.
+\item Das im Laufe der Hintergrundentfernung auf der letzten Bildmatrix ermittelte Vordergrund wird aus einer Bildmatrix in ein raw image überführt und in der Datei {\it fg\_image.jpg} gespeichert.
+\end{enumerate}
+
+Abbildung.1: Testablauf \newline
+\includegraphics[width=\linewidth]{testfall}
+
+Die Aufgabe der Hintergrundentferners im Test war es, den \glqq wandernden\grqq Streifen als Vordergrundobjekt zu identifizieren und dementsprechend hervorzuheben.
+Das in der Datei gespeicherte {\it fg\_image.jpg} Ergebnisbild ist schwarz und hat einen weißen Streifen an der Position des Streifens aus dem letzten interpretierten Bild. Der Schwarzbereich gehört zum Hintergrund, das Objekt - der Streifen - gehört zum Vordergrund und wird weiß markiert. Das zeugt davon, dass unser Programm die Hintergrundentfernung richtig gemacht hat.
 
 \newpage
 \section{Zusammenfassung und Ausblick}
@@ -213,7 +230,7 @@ SWP 2013: Portierung von OpenCV auf RIOT OS \newline (\textless\href{https://git
 \item Unser Beitrag zu RIOT-wiki : 
 
 Using C++ on RIOT OS \newline 
-(\textless\href{https://github.com/RIOT-OS/RIOT/wiki}{https://github.com/RIOT-OS/RIOT/wiki}\textgreater)
+(\textless\href{https://github.com/RIOT-OS/RIOT/wiki/Using-CPP-on-RIOT}{https://github.com/RIOT-OS/RIOT/wiki/Using-CPP-on-RIOT}\textgreater)
 
 \end {itemize}
 
@@ -237,23 +254,13 @@ Die folgenden Definitionen stammen, falls nicht explizit angegeben, aus den ents
 
 \item {\it Wahrscheinlichkeitsverteilung (probability distribution)} - gibt an, wie sich die Wahrscheinlichkeiten auf die möglichen Zufallsergebnisse, insbesondere die möglichen Werte einer Zufallsvariablen, verteilen. Erfasst bzw. quantifiziert den Zufall in einem stochastischen Vorgang.
 
-\item {\it Stetige Wahrscheinlichkeitsverteilung (continuous probability distribution)} - erstreckt sich auf größere Bereiche. Einzelne Punkte können dabei die Wahrscheinlichkeit 0 haben. 
-
-\item {\it Normalverteilung (Gauß-Verteilung, normal distribution, Gaussian distribution)} - ein prototypischer Vertreter von stetigen Verteilungen. Ihre Wahrscheinlichkeitsdichte bzw. deren Graph wird auch Gauß-Funktion, Gauß-Kurve, Gauß-Glocke oder Glockenkurve genannt. Mittels Normalverteilung lassen sich viele reale Situationen näherungsweise beschreiben.
-
-\item {\it Wahrscheinlichkteisdichtefunktion (probability density function, p.d.f.)} - ein Hilfsmittel zur Beschreibung einer stetigen Wahrscheinlichkeitsverteilung. Mit Hilfe dieser Funktion lässt sich die Wahrscheinlichkeit für ein beliebiges Intervall bestimmen. 
-
-\item {\it Erwartungswert (expected value)} - beschreibt die Zahl, die die Zufallsvariable im Mittel annimmt. 
-
-\item {\it Varianz (variance)} - Maß für die Abweichung einer Zufallsvariablen von ihrem Erwartungswert. 
-
 \item {\it Mischverteilung (mixture distribution, mixture model)} - Wahrscheinlichkeitsverteilung einer Zufallsvariablen, die sich aus der Mischung von anderen Wahrscheinlichkeitsverteilungen ergibt.
 
-\item {\it Gaußsche Mischverteilung (gaussian mixture model, GMM)} - Approximiert Verteilung durch gewichtete Summe von Normalverteilungen.
+\item {\it Gaußsche Mischverteilung (gaussian mixture model, GMM)} - Approximiert Verteilung durch gewichtete Summe von Normalverteilungen (Gauß-Verteilungen).
 
-\item {\it Hintergrundmodell (background mixture model)} - basiert auf Annahme, dass Hintergrundfarbwert eines Pixels in einer Bildfolge normal verteilt ist (kann also als eine Gaußverteilung mit Dichtefunktion p(x) modelliert werden). Damit reduziert sich das Problem der Schätzung der aktuellen Hintergrundfarbverteilung auf das Schätzen des Erwartungsvektors (geschätzter Hintergrundfarbwert) und der Kovarianzmatrix (geschätzte Schwankung des Farbwertes), die eine Gaußverteilung eindeutig charakterisieren. Die Pixel, die keinen der (mittels einer einfachen Heuristik bestimmten) höchstwahrscheinlichen Hintergrundfarbwerte annehmen, werden als Vordergrundpixel bezeichnet. Die Vordergrundpixel werden dann zu 2D Objekten zusammengesfasst. Um den Algorithmus zu initialisieren, muss zuerst ein Hintergrundbild aufgenommen werden. (Beschreibung aus [7]).
+\item {\it Mischverteilung als Hintergrundmodell (background mixture model)} - basiert auf Annahme, dass Hintergrundfarbwert eines Pixels in einer Bildfolge als eine Mischverteilung modelliert werden kann. Eine Gaußverteilung modelliert dabei jeweils eine Ballung von Farbwerten eines Pixels (Z.B. Farbballung, die vom grauen Asphalt herrührt). Die Pixel, deren neu beobachtete Farbwerte nicht in der Nähe einer Hintergrundverteilung liegen, werden als Vordergrundpixel klassifiziert. Die Vordergrundpixel werden dann zu 2D Objekten zusammengesfasst. Um den Algorithmus zu initialisieren, muss zuerst ein Hintergrundbild aufgenommen werden. (Beschreibung aus [7]).
 
-\item {\it adaptives Hintergrundmodell (adaptive background mixture model)} - ein Verfahren, wobei anfangs eine \"leere\" Szene als Hintergrundbild aufgenommen wird und dieses dann immer wieder adaptiert wird. Die ständige Anpassung des Hintergrundbildes ist nötig, um Änderungen der Lichtverhältnisse oder des Hintergrunds selbst zu berücksichtigen. (Beschreibung aus [7]).
+\item {\it adaptives Hintergrundmodell (adaptive background model)} - ein Verfahren, wobei anfangs eine \"leere\" Szene als Hintergrundbild aufgenommen wird und dieses dann immer wieder adaptiert wird. Die ständige Anpassung des Hintergrundbildes ist nötig, um Änderungen der Lichtverhältnisse oder des Hintergrunds selbst zu berücksichtigen. (Beschreibung aus [7]).
 
 \end {description}
 
@@ -264,17 +271,21 @@ Die folgenden Definitionen stammen, falls nicht explizit angegeben, aus den ents
 
 \begin{enumerate} 
 
-\item Projekt SAFEST Homepage (\textless\href{http://safest.realmv6.org/}{http://safest.realmv6.org/}\textgreater)
-\item OpenCV Homepage (\textless\href{http://opencv.org}{http://opencv.org}\textgreater)
-\item OS RIOT Homepage (\textless\href{http://www.riot-os.org}{http://www.riot-os.org}\textgreater)
+\item Projekt SAFEST Homepage (\textless\href{http://safest.realmv6.org/}{http://safest.realmv6.org/}\textgreater). \newline 
+Abgerufen am 30.07.2013.
 
-\item Baccelli E., Hahm O., Wählisch M., Günes M., Schmidt T., RIOT: One OS to Rule Them All in the IoT. INRIA, Research Report, No. RR-8176, Dec. 2012. \newline (\textless\href{http://hal.inria.fr/hal-00768685/}{http://hal.inria.fr/hal-00768685/}\textgreater)
+\item OpenCV Homepage (\textless\href{http://opencv.org}{http://opencv.org}\textgreater). Abgerufen am 30.07.2013.
 
-\item KaewTraKulPong P., Bowden R., An Improved Adaptive Background Mixture Model for Real-time Tracking with Shadow Detection. In Proc. 2nd European Workshop on Advanced Video Based Surveillance Systems, AVBS01, Sept 2001. \newline (\textless\href{http://personal.ee.surrey.ac.uk/Personal/R.Bowden/publications/avbs01/avbs01.pdf}{http://personal.ee.surrey.ac.uk/Personal/R.Bowden/publications/avbs01/avbs01.pdf}\textgreater)
+\item OS RIOT Homepage (\textless\href{http://www.riot-os.org}{http://www.riot-os.org}\textgreater). Abgerufen am 30.07.2013.
 
-\item Segmentierung (Bildverarbeitung). Wikipedia. \newline (\textless\href{http://de.wikipedia.org/wiki/Segmentierung\_(Bildverarbeitung)}{http://de.wikipedia.org/wiki/Segmentierung\_(Bildverarbeitung)}\textgreater)
+\item Baccelli E., Hahm O., Wählisch M., Günes M., Schmidt T., RIOT: One OS to Rule Them All in the IoT. INRIA, Research Report, No. RR-8176, Dec. 2012. \newline (\textless\href{http://hal.inria.fr/hal-00768685/}{http://hal.inria.fr/hal-00768685/}\textgreater). Abgerufen am 30.07.2013.
 
-\item Focken D. Adaptive Hintergrundmodelle zur Personenverfolgung. Studienarbeit. Universität Karlsruhe, Fakultät für Informatik, Institut für Komplexität und Logik, Jul. 2000. \newline (\textless\href{https://cvhci.anthropomatik.kit.edu/~stiefel/studienarbeiten/dirk\_sa.pdf}{https://cvhci.anthropomatik.kit.edu/~stiefel/studienarbeiten/dirk\_sa.pdf}\textgreater)
+\item KaewTraKulPong P., Bowden R., An Improved Adaptive Background Mixture Model for Real-time Tracking with Shadow Detection. In Proc. 2nd European Workshop on Advanced Video Based Surveillance Systems, AVBS01, Sept 2001. \newline (\textless\href{http://personal.ee.surrey.ac.uk/Personal/R.Bowden/publications/avbs01/avbs01.pdf}{http://personal.ee.surrey.ac.uk/Personal/R.Bowden/publications/avbs01/avbs01.pdf}\textgreater). Abgerufen am 30.07.2013.
+
+\item Segmentierung (Bildverarbeitung). Wikipedia. \newline (\textless\href{http://de.wikipedia.org/wiki/Segmentierung\_(Bildverarbeitung)}{http://de.wikipedia.org/wiki/Segmentierung\_(Bildverarbeitung)}\textgreater). \newline
+Abgerufen am 30.07.2013.
+
+\item Focken D. Adaptive Hintergrundmodelle zur Personenverfolgung. Studienarbeit. Universität Karlsruhe, Fakultät für Informatik, Institut für Komplexität und Logik, Jul. 2000. \newline (\textless\href{https://cvhci.anthropomatik.kit.edu/~stiefel/studienarbeiten/dirk\_sa.pdf}{https://cvhci.anthropomatik.kit.edu/~stiefel/studienarbeiten/dirk\_sa.pdf}\textgreater). Abgerufen am 30.07.2013.
 
 \end{enumerate}
 
